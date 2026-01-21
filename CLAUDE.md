@@ -2,6 +2,8 @@
 
 本文件为 Claude Code (claude.ai/code) 提供本仓库的开发指南。
 
+**GitHub 仓库**: https://github.com/DigOrange/desklab
+
 ## 项目概述
 
 DeskLab（个人工作台）是一款桌面端个人助理应用，用于知识、文件和工作管理。核心体验是所见即所得编辑器，支持 Markdown 存储、AI 对话和可扩展架构。
