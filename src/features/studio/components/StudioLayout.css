@@ -1,0 +1,33 @@
+.studio-layout {
+  display: flex;
+  flex: 1;
+  gap: 12px;
+  padding: 0 12px 12px;
+  min-height: 0;
+  overflow: hidden;
+  min-width: 0;
+}
+
+/* 面板基础样式已在 Panel.css 中定义 */
+
+.sources-panel {
+  flex-shrink: 0;
+  min-width: 200px;
+}
+
+.chat-panel {
+  flex: 1;
+  min-width: 280px;
+}
+
+.workspace-panel {
+  flex-shrink: 1;
+  min-width: 280px;
+  max-width: 100%;
+  transition: width 0.3s ease;
+}
+
+/* 编辑器展开状态 */
+.workspace-panel.editor-expanded {
+  min-width: 400px;
+}

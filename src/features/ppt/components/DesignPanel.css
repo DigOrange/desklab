@@ -1,0 +1,450 @@
+/* PPT 设计面板样式 */
+/* 右侧属性面板，参考 PPTist 设计 */
+
+.design-panel {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 280px;
+  height: 100%;
+  background: var(--bg-primary);
+  border-left: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  z-index: 100;
+  box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1);
+}
+
+.design-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border-color);
+  background: var(--bg-secondary);
+}
+
+.design-panel-tabs {
+  display: flex;
+  gap: 4px;
+}
+
+.design-panel-tabs .tab-btn {
+  padding: 6px 16px;
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 13px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.design-panel-tabs .tab-btn:hover {
+  background: var(--bg-hover);
+}
+
+.design-panel-tabs .tab-btn.active {
+  background: var(--accent-color);
+  color: white;
+}
+
+.design-panel-header .close-btn {
+  width: 28px;
+  height: 28px;
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.design-panel-header .close-btn:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.design-panel-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px 0;
+}
+
+/* 面板区块 */
+.panel-section {
+  margin-bottom: 16px;
+}
+
+.section-header {
+  padding: 8px 16px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.section-content {
+  padding: 0 16px;
+}
+
+/* 背景类型选择器 */
+.background-type-selector {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.background-type-selector .type-btn {
+  flex: 1;
+  padding: 8px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+  font-size: 12px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.background-type-selector .type-btn:hover {
+  border-color: var(--accent-color);
+}
+
+.background-type-selector .type-btn.active {
+  background: var(--accent-color);
+  border-color: var(--accent-color);
+  color: white;
+}
+
+/* 颜色选择器行 */
+.color-picker-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.color-picker-row label {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.color-input-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.color-input-group input[type="color"] {
+  width: 28px;
+  height: 28px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  cursor: pointer;
+  padding: 0;
+  background: none;
+}
+
+.color-input-group input[type="color"]::-webkit-color-swatch-wrapper {
+  padding: 2px;
+}
+
+.color-input-group input[type="color"]::-webkit-color-swatch {
+  border: none;
+  border-radius: 2px;
+}
+
+.color-value {
+  font-size: 11px;
+  color: var(--text-tertiary);
+  font-family: monospace;
+  width: 60px;
+}
+
+/* 渐变方向按钮 */
+.gradient-direction {
+  margin-bottom: 12px;
+}
+
+.gradient-direction label {
+  display: block;
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+}
+
+.direction-buttons {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 4px;
+}
+
+.direction-btn {
+  width: 100%;
+  aspect-ratio: 1;
+  border: 1px solid var(--border-color);
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.direction-btn:hover {
+  border-color: var(--accent-color);
+}
+
+.direction-btn.active {
+  background: var(--accent-color);
+  border-color: var(--accent-color);
+  color: white;
+}
+
+/* 应用到全部按钮 */
+.apply-all-btn {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  font-size: 12px;
+  cursor: pointer;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: all 0.2s;
+  margin-top: 12px;
+}
+
+.apply-all-btn:hover {
+  background: var(--accent-color);
+  border-color: var(--accent-color);
+  color: white;
+}
+
+.apply-all-btn .material-icon {
+  font-size: 16px;
+}
+
+/* 幻灯片信息 */
+.slide-info {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+}
+
+/* 预置主题网格 */
+.preset-themes-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+.preset-theme-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px;
+  border: 2px solid transparent;
+  background: var(--bg-secondary);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.preset-theme-card:hover {
+  border-color: var(--accent-color);
+}
+
+.preset-theme-card.active {
+  border-color: var(--accent-color);
+  background: var(--accent-light);
+}
+
+.preset-theme-card .theme-preview {
+  width: 100%;
+  height: 48px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 6px;
+  border: 1px solid var(--border-color);
+}
+
+.preset-theme-card .theme-text {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.preset-theme-card .theme-colors {
+  display: flex;
+  gap: 2px;
+  margin-bottom: 4px;
+}
+
+.preset-theme-card .color-dot {
+  width: 16px;
+  height: 4px;
+  border-radius: 1px;
+}
+
+.preset-theme-card .theme-name {
+  font-size: 10px;
+  color: var(--text-secondary);
+}
+
+/* 尺寸选择器 */
+.size-selector {
+  margin-top: 12px;
+}
+
+.size-selector label {
+  display: block;
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+}
+
+.size-buttons {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 6px;
+}
+
+.size-btn {
+  padding: 8px 12px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+  font-size: 12px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.size-btn:hover {
+  border-color: var(--accent-color);
+}
+
+.size-btn.active {
+  background: var(--accent-color);
+  border-color: var(--accent-color);
+  color: white;
+}
+
+/* 切换效果网格 */
+.transition-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+.transition-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 8px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+  cursor: pointer;
+  border-radius: 6px;
+  transition: all 0.2s;
+  gap: 4px;
+}
+
+.transition-btn:hover {
+  border-color: var(--accent-color);
+  color: var(--text-primary);
+}
+
+.transition-btn.active {
+  background: var(--accent-color);
+  border-color: var(--accent-color);
+  color: white;
+}
+
+.transition-btn .material-icon {
+  font-size: 24px;
+}
+
+.transition-label {
+  font-size: 11px;
+}
+
+/* 方向网格 */
+.direction-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+}
+
+/* 时长选择器 */
+.duration-selector {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.duration-btn {
+  flex: 1;
+  padding: 6px 8px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+  font-size: 11px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.duration-btn:hover {
+  border-color: var(--accent-color);
+}
+
+.duration-btn.active {
+  background: var(--accent-color);
+  border-color: var(--accent-color);
+  color: white;
+}
+
+.duration-display {
+  text-align: center;
+  font-size: 12px;
+  color: var(--text-tertiary);
+}
+
+/* 即将推出提示 */
+.coming-soon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  color: var(--text-tertiary);
+  gap: 8px;
+}
+
+.coming-soon .material-icon {
+  font-size: 32px;
+}
+
+.coming-soon span:last-child {
+  font-size: 12px;
+}
+
+/* 响应式 */
+@media (max-width: 1400px) {
+  .design-panel {
+    width: 260px;
+  }
+}

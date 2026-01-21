@@ -1,0 +1,308 @@
+/* 图表数据编辑器样式 */
+
+.chart-data-editor {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 700px;
+  max-width: 90vw;
+  max-height: 80vh;
+  background: var(--bg-primary);
+  border-radius: 12px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  z-index: 1100;
+  display: flex;
+  flex-direction: column;
+}
+
+.chart-data-editor .editor-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.chart-data-editor .editor-header h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.chart-data-editor .close-btn {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: transparent;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  transition: all 0.2s;
+}
+
+.chart-data-editor .close-btn:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.chart-data-editor .editor-content {
+  flex: 1;
+  padding: 20px;
+  overflow: auto;
+}
+
+.chart-data-editor .data-table-wrapper {
+  overflow: auto;
+  max-height: 400px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+}
+
+.chart-data-editor .data-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 500px;
+}
+
+.chart-data-editor .data-table th,
+.chart-data-editor .data-table td {
+  padding: 8px;
+  border: 1px solid var(--border-color);
+  text-align: center;
+}
+
+.chart-data-editor .data-table th {
+  background: var(--bg-secondary);
+  font-weight: 500;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.chart-data-editor .corner-cell {
+  width: 120px;
+  min-width: 120px;
+}
+
+.chart-data-editor .label-cell {
+  min-width: 100px;
+  position: relative;
+}
+
+.chart-data-editor .label-cell input {
+  width: 100%;
+  padding: 6px 24px 6px 8px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  background: transparent;
+  font-size: 13px;
+  text-align: center;
+  color: var(--text-primary);
+}
+
+.chart-data-editor .label-cell input:focus {
+  border-color: var(--primary-color);
+  outline: none;
+  background: var(--bg-primary);
+}
+
+.chart-data-editor .label-cell .remove-col-btn {
+  position: absolute;
+  right: 4px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 18px;
+  height: 18px;
+  border: none;
+  background: transparent;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-tertiary);
+  opacity: 0;
+  transition: all 0.2s;
+}
+
+.chart-data-editor .label-cell:hover .remove-col-btn {
+  opacity: 1;
+}
+
+.chart-data-editor .label-cell .remove-col-btn:hover {
+  background: rgba(220, 38, 38, 0.1);
+  color: #dc2626;
+}
+
+.chart-data-editor .label-cell .remove-col-btn .material-icon {
+  font-size: 14px;
+}
+
+.chart-data-editor .add-col-cell {
+  width: 50px;
+  min-width: 50px;
+}
+
+.chart-data-editor .add-col-btn,
+.chart-data-editor .add-row-btn {
+  width: 28px;
+  height: 28px;
+  border: 1px dashed var(--border-color);
+  background: transparent;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-tertiary);
+  transition: all 0.2s;
+}
+
+.chart-data-editor .add-col-btn:hover,
+.chart-data-editor .add-row-btn:hover {
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+  background: rgba(90, 167, 160, 0.1);
+}
+
+.chart-data-editor .dataset-label-cell {
+  background: var(--bg-secondary);
+  position: relative;
+  min-width: 120px;
+}
+
+.chart-data-editor .dataset-label-cell input {
+  width: 100%;
+  padding: 6px 24px 6px 8px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  background: transparent;
+  font-size: 13px;
+  color: var(--text-primary);
+}
+
+.chart-data-editor .dataset-label-cell input:focus {
+  border-color: var(--primary-color);
+  outline: none;
+  background: var(--bg-primary);
+}
+
+.chart-data-editor .dataset-label-cell .remove-row-btn {
+  position: absolute;
+  right: 4px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 18px;
+  height: 18px;
+  border: none;
+  background: transparent;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-tertiary);
+  opacity: 0;
+  transition: all 0.2s;
+}
+
+.chart-data-editor .dataset-label-cell:hover .remove-row-btn {
+  opacity: 1;
+}
+
+.chart-data-editor .dataset-label-cell .remove-row-btn:hover {
+  background: rgba(220, 38, 38, 0.1);
+  color: #dc2626;
+}
+
+.chart-data-editor .dataset-label-cell .remove-row-btn .material-icon {
+  font-size: 14px;
+}
+
+.chart-data-editor .data-cell input {
+  width: 100%;
+  padding: 6px 8px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  background: transparent;
+  font-size: 13px;
+  text-align: center;
+  color: var(--text-primary);
+}
+
+.chart-data-editor .data-cell input:focus {
+  border-color: var(--primary-color);
+  outline: none;
+  background: var(--bg-primary);
+}
+
+.chart-data-editor .data-cell input::-webkit-inner-spin-button,
+.chart-data-editor .data-cell input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.chart-data-editor .placeholder-cell {
+  background: var(--bg-secondary);
+}
+
+.chart-data-editor .editor-tip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  padding: 10px 12px;
+  background: var(--bg-secondary);
+  border-radius: 6px;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.chart-data-editor .editor-tip .material-icon {
+  font-size: 16px;
+  color: var(--primary-color);
+}
+
+.chart-data-editor .editor-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 16px 20px;
+  border-top: 1px solid var(--border-color);
+}
+
+.chart-data-editor .cancel-btn,
+.chart-data-editor .save-btn {
+  padding: 8px 20px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.chart-data-editor .cancel-btn {
+  border: 1px solid var(--border-color);
+  background: transparent;
+  color: var(--text-secondary);
+}
+
+.chart-data-editor .cancel-btn:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.chart-data-editor .save-btn {
+  border: none;
+  background: var(--primary-color);
+  color: white;
+}
+
+.chart-data-editor .save-btn:hover {
+  background: var(--primary-hover);
+}

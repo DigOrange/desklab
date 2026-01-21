@@ -1,0 +1,521 @@
+/* PPT 大纲对话框样式 */
+
+.ppt-dialog-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.ppt-dialog {
+  background: var(--bg-primary);
+  border-radius: 12px;
+  width: 90%;
+  max-width: 700px;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+}
+
+.ppt-dialog-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.ppt-dialog-header h2 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0;
+  color: var(--text-primary);
+}
+
+.ppt-dialog-header h2 .material-icon {
+  color: #f97316;
+  font-size: 24px;
+}
+
+.ppt-dialog-header .close-btn {
+  background: none;
+  border: none;
+  padding: 4px;
+  cursor: pointer;
+  color: var(--text-secondary);
+  border-radius: 4px;
+}
+
+.ppt-dialog-header .close-btn:hover {
+  background: var(--bg-hover);
+}
+
+.ppt-dialog-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+}
+
+.ppt-dialog-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 16px 20px;
+  border-top: 1px solid var(--border-color);
+}
+
+/* 错误提示 */
+.ppt-dialog-error {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  color: #dc2626;
+  margin-bottom: 16px;
+}
+
+.ppt-dialog-error .material-icon:first-child {
+  font-size: 20px;
+}
+
+.ppt-dialog-error span:nth-child(2) {
+  flex: 1;
+}
+
+.ppt-dialog-error button {
+  background: none;
+  border: none;
+  padding: 2px;
+  cursor: pointer;
+  color: #dc2626;
+}
+
+/* 配置步骤 */
+.ppt-config-step {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.source-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background: var(--bg-secondary);
+  border-radius: 8px;
+  color: var(--text-secondary);
+}
+
+.source-info .material-icon {
+  color: var(--primary-color);
+}
+
+.config-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.config-field label {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.config-field input {
+  padding: 10px 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  font-size: 14px;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+.config-field input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px var(--primary-color-alpha);
+}
+
+.generate-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 20px;
+  background: linear-gradient(135deg, #f97316, #ea580c);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.generate-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, #ea580c, #c2410c);
+  transform: translateY(-1px);
+}
+
+.generate-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* 生成中步骤 */
+.ppt-generating-step,
+.ppt-creating-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 60px 20px;
+}
+
+.generating-spinner .material-icon {
+  font-size: 48px;
+  color: #f97316;
+}
+
+.ppt-generating-step p,
+.ppt-creating-step p {
+  font-size: 16px;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.generating-hint {
+  font-size: 14px !important;
+  color: var(--text-secondary) !important;
+}
+
+/* 预览步骤 */
+.ppt-preview-step {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.outline-header {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.outline-title-input {
+  font-size: 24px;
+  font-weight: 600;
+  padding: 8px 12px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-primary);
+}
+
+.outline-title-input:hover,
+.outline-title-input:focus {
+  border-color: var(--border-color);
+  background: var(--bg-secondary);
+}
+
+.outline-title-input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+}
+
+.outline-subtitle-input {
+  font-size: 16px;
+  padding: 6px 12px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-secondary);
+}
+
+.outline-subtitle-input:hover,
+.outline-subtitle-input:focus {
+  border-color: var(--border-color);
+  background: var(--bg-secondary);
+}
+
+.outline-subtitle-input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+}
+
+.slides-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.slides-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.slides-header span {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.add-slide-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 12px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  font-size: 13px;
+  color: var(--text-primary);
+  cursor: pointer;
+}
+
+.add-slide-btn:hover {
+  background: var(--bg-hover);
+}
+
+.add-slide-btn .material-icon {
+  font-size: 16px;
+}
+
+.slide-outline-item {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.slide-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.slide-number {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f97316;
+  color: white;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.slide-layout {
+  font-size: 12px;
+  padding: 4px 8px;
+  background: var(--bg-primary);
+  border-radius: 4px;
+  color: var(--text-secondary);
+}
+
+.delete-slide-btn {
+  margin-left: auto;
+  background: none;
+  border: none;
+  padding: 4px;
+  cursor: pointer;
+  color: var(--text-secondary);
+  border-radius: 4px;
+}
+
+.delete-slide-btn:hover {
+  background: #fef2f2;
+  color: #dc2626;
+}
+
+.slide-title-input {
+  font-size: 16px;
+  font-weight: 500;
+  padding: 8px 10px;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+.slide-title-input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+}
+
+.slide-points {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-left: 8px;
+}
+
+.point-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.point-bullet {
+  color: #f97316;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.point-item input {
+  flex: 1;
+  padding: 6px 10px;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  font-size: 14px;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+.point-item input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+}
+
+.remove-point-btn {
+  background: none;
+  border: none;
+  padding: 2px;
+  cursor: pointer;
+  color: var(--text-secondary);
+  border-radius: 4px;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.point-item:hover .remove-point-btn {
+  opacity: 1;
+}
+
+.remove-point-btn:hover {
+  color: #dc2626;
+}
+
+.remove-point-btn .material-icon {
+  font-size: 16px;
+}
+
+.add-point-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 10px;
+  background: none;
+  border: 1px dashed var(--border-color);
+  border-radius: 6px;
+  font-size: 13px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  margin-top: 4px;
+}
+
+.add-point-btn:hover {
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+}
+
+.add-point-btn .material-icon {
+  font-size: 16px;
+}
+
+/* 底部按钮 */
+.cancel-btn {
+  padding: 10px 20px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  font-size: 14px;
+  color: var(--text-primary);
+  cursor: pointer;
+}
+
+.cancel-btn:hover {
+  background: var(--bg-hover);
+}
+
+.regenerate-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 16px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  font-size: 14px;
+  color: var(--text-primary);
+  cursor: pointer;
+}
+
+.regenerate-btn:hover {
+  background: var(--bg-hover);
+}
+
+.regenerate-btn .material-icon {
+  font-size: 18px;
+}
+
+.create-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 20px;
+  background: linear-gradient(135deg, #f97316, #ea580c);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.create-btn:hover {
+  background: linear-gradient(135deg, #ea580c, #c2410c);
+}
+
+.create-btn .material-icon {
+  font-size: 18px;
+}
+
+/* 旋转动画 */
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.rotating {
+  animation: rotate 1s linear infinite;
+}

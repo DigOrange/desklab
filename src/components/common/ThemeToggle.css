@@ -1,0 +1,26 @@
+/* 主题切换按钮样式 */
+
+.theme-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-text-secondary);
+  transition: all var(--transition-fast);
+}
+
+.theme-toggle:hover {
+  background: var(--color-bg-hover);
+  color: var(--color-text);
+}
+
+.theme-toggle .material-icon {
+  font-size: 20px;
+}
+
+.theme-toggle-label {
+  font-size: 13px;
+  font-weight: 500;
+}

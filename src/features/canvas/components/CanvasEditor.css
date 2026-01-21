@@ -1,0 +1,157 @@
+/* 画布编辑器样式 */
+
+.canvas-editor {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--bg-primary);
+}
+
+.canvas-editor-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.canvas-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.canvas-title .material-icon {
+  font-size: 18px;
+  color: var(--primary-color);
+}
+
+.canvas-title .title-text {
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 4px;
+  transition: background 0.15s;
+}
+
+.canvas-title .title-text:hover {
+  background: var(--bg-hover);
+}
+
+.canvas-title .title-input {
+  padding: 2px 6px;
+  border: 1px solid var(--primary-color);
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.9);
+  font-size: 14px;
+  font-weight: 500;
+  outline: none;
+}
+
+.canvas-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.save-status {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.save-status .material-icon {
+  font-size: 14px;
+}
+
+.save-status .material-icon:not(.rotating) {
+  color: var(--primary-color);
+}
+
+.action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.action-btn:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.action-btn.close-btn:hover {
+  background: #fef2f2;
+  border-color: #fca5a5;
+  color: #dc2626;
+}
+
+.action-btn .material-icon {
+  font-size: 18px;
+}
+
+.canvas-container {
+  flex: 1;
+  overflow: hidden;
+}
+
+/* 加载状态 */
+.canvas-editor-loading,
+.canvas-editor-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  height: 100%;
+  background: var(--bg-primary);
+  color: var(--text-secondary);
+}
+
+.canvas-editor-loading .material-icon,
+.canvas-editor-error .material-icon {
+  font-size: 48px;
+}
+
+.canvas-editor-error .material-icon {
+  color: #dc2626;
+}
+
+.canvas-editor-error button {
+  padding: 8px 16px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  color: var(--text-primary);
+  cursor: pointer;
+}
+
+.canvas-editor-error button:hover {
+  background: var(--bg-hover);
+}
+
+/* 旋转动画 */
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.rotating {
+  animation: rotate 1s linear infinite;
+}

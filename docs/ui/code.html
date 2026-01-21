@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>AI 工作助手 - 安居信息化</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#135bec",
+                        "background-light": "#f8fafc",
+                        "background-dark": "#0f172a",
+                        "surface-light": "#ffffff",
+                        "surface-dark": "#1e293b",
+                        "border-light": "#e2e8f0",
+                        "border-dark": "#334155",
+                        "panel-light": "#FFFFFF",
+                        "panel-dark": "#1E1E1E",
+                    },
+                    fontFamily: {
+                        sans: ["Space Grotesk", "Noto Sans SC", "sans-serif"],
+                    },
+                    borderRadius: {
+                        DEFAULT: "0.5rem",
+                        "md": "0.5rem",
+                        "lg": "0.75rem",
+                        "xl": "1rem",
+                        "3xl": "1.5rem",
+                    },
+                },
+            },
+        };
+    </script>
+    <style>
+        body { font-family: 'Space Grotesk', 'Noto Sans SC', sans-serif; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background-color: rgba(156, 163, 175, 0.3); border-radius: 20px; }
+        .dark ::-webkit-scrollbar-thumb { background-color: rgba(75, 85, 99, 0.5); }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24; }
+        .active .material-symbols-outlined { font-variation-settings: 'FILL' 1; }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-800 dark:text-slate-200 min-h-screen transition-colors duration-200">
+    <div id="root"></div>
+
+    <!-- React and Dependencies -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/history@5/umd/history.development.js"></script>
+    <script src="https://unpkg.com/react-router@6.3.0/umd/react-router.development.js"></script>
+    <script src="https://unpkg.com/react-router-dom@6.3.0/umd/react-router-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+        const { createRoot } = ReactDOM;
+        const { MemoryRouter, Routes, Route, Link, useNavigate, useLocation } = ReactRouterDOM;
+
+        // --- Shared Components ---
+
+        const Sidebar = () => {
+            const location = useLocation();
+            const isActive = (path) => location.pathname === path;
+
+            return (
+                <aside className="w-64 border-r border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark flex flex-col fixed inset-y-0 left-0 z-10 transition-colors duration-200">
+                    <div className="h-16 flex items-center px-6 border-b border-border-light dark:border-border-dark">
+                        <Link to="/" className="flex items-center space-x-2">
+                            <span className="material-symbols-outlined text-primary text-3xl">smart_toy</span>
+                            <span className="font-bold text-lg text-slate-900 dark:text-white">工作助手</span>
+                        </Link>
+                    </div>
+                    <nav className="flex-1 px-3 py-6 space-y-1">
+                        <Link to="/" className={`flex items-center px-3 py-2 text-sm font-medium rounded-lg group transition-colors ${isActive('/') ? 'bg-blue-50 dark:bg-blue-900/20 text-primary' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white'}`}>
+                            <span className="material-symbols-outlined mr-3 text-2xl">home</span>
+                            首页
+                        </Link>
+                        <a className="flex items-center px-3 py-2 text-sm font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white rounded-lg group transition-colors" href="#">
+                            <span className="material-symbols-outlined mr-3 text-2xl">schedule</span>
+                            最近
+                        </a>
+                        <a className="flex items-center px-3 py-2 text-sm font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white rounded-lg group transition-colors" href="#">
+                            <span className="material-symbols-outlined mr-3 text-2xl">star</span>
+                            星标
+                        </a>
+                        <a className="flex items-center px-3 py-2 text-sm font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white rounded-lg group transition-colors" href="#">
+                            <span className="material-symbols-outlined mr-3 text-2xl">folder_open</span>
+                            文件夹
+                        </a>
+                        <div className="py-4">
+                            <div className="border-t border-border-light dark:border-border-dark"></div>
+                        </div>
+                        <div className="px-3 mb-2">
+                            <h3 className="text-xs font-semibold text-slate-500 dark:text-slate-500 uppercase tracking-wider">
+                                工作空间
+                            </h3>
+                        </div>
+                        <a className="flex items-center px-3 py-2 text-sm font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white rounded-lg group transition-colors" href="#">
+                            <span className="material-symbols-outlined mr-3 text-xl text-purple-500" style={{fontVariationSettings: "'FILL' 1, 'wght' 400"}}>circle</span>
+                            研究
+                        </a>
+                        <a className="flex items-center px-3 py-2 text-sm font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white rounded-lg group transition-colors" href="#">
+                            <span className="material-symbols-outlined mr-3 text-xl text-green-500" style={{fontVariationSettings: "'FILL' 1, 'wght' 400"}}>circle</span>
+                            开发
+                        </a>
+                        <a className="flex items-center px-3 py-2 text-sm font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white rounded-lg group transition-colors" href="#">
+                            <span className="material-symbols-outlined mr-3 text-xl text-orange-500" style={{fontVariationSettings: "'FILL' 1, 'wght' 400"}}>circle</span>
+                            个人
+                        </a>
+                    </nav>
+                    <div className="border-t border-border-light dark:border-border-dark p-4">
+                        <div className="flex items-center w-full group cursor-pointer">
+                            <img alt="User Avatar" className="inline-block h-9 w-9 rounded-full ring-2 ring-white dark:ring-slate-800" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA2bRc9Mka8d8Oa0KmKESJOUJCjyh63D8c63zGk7vrd8JZqE28yz7DvX190w-xcbwDl3rXRqfUEQB9_DoIy7_J26bdkiItkKwSoTHHhMteUd5JuW1GAtrZmvKApuYbAgd6OJZj47kvkusfcz3Fpe4eu-ZUogqKHAJNPpK5Y-yc1L17zIw_9jb7YgNoc3E75NgHBLo2BBUGrNyJPfjuclxuiRQmiXLYJutbzxUn-3K9UWdsPWycDuxXyfnxPmGwrUSGvOIiPb6LWkEew"/>
+                            <div className="ml-3">
+                                <p className="text-sm font-medium text-slate-700 dark:text-slate-200 group-hover:text-slate-900 dark:group-hover:text-white">Alex Morgan</p>
+                                <p className="text-xs font-medium text-slate-500 dark:text-slate-400 group-hover:text-slate-700 dark:group-hover:text-slate-300">免费计划</p>
+                            </div>
+                        </div>
+                    </div>
+                </aside>
+            );
+        };
+
+        // --- Screen Components ---
+
+        const Dashboard = () => {
+            const navigate = useNavigate();
+
+            const projects = [
+                { id: '1', title: '信息安全政策', icon: 'policy', color: 'blue', updated: '2小时前', sources: 6, link: '/notebook' },
+                { id: '2', title: '供应商采购流程', icon: 'handshake', color: 'slate', updated: '昨天', sources: 3 },
+                { id: '3', title: '视频分析需求', icon: 'videocam', color: 'teal', updated: '2024年12月27日', sources: 1 },
+                { id: '4', title: 'Claude 代理架构', icon: 'architecture', color: 'cyan', updated: '2024年12月25日', sources: 3 },
+                { id: '5', title: '平台架构 V2', icon: 'hub', color: 'indigo', updated: '2024年11月26日', sources: 2 },
+                { id: '6', title: '世界历史笔记', icon: 'school', color: 'violet', updated: '2024年12月7日', sources: 1 },
+                { id: '7', title: '中国文学', icon: 'menu_book', color: 'emerald', updated: '2024年12月27日', sources: 1 },
+                { id: '8', title: '微积分复习', icon: 'functions', color: 'stone', updated: '2024年12月27日', sources: 1 },
+            ];
+
+            return (
+                <div className="flex">
+                    <Sidebar />
+                    <main className="ml-64 flex-1 flex flex-col h-screen overflow-hidden">
+                        <header className="h-16 bg-surface-light/80 dark:bg-surface-dark/80 backdrop-blur-md border-b border-border-light dark:border-border-dark flex items-center justify-between px-8 z-10 sticky top-0 transition-colors duration-200">
+                            <div className="flex-1 max-w-2xl">
+                                <div className="relative group">
+                                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <span className="material-symbols-outlined text-slate-400 group-focus-within:text-primary">search</span>
+                                    </div>
+                                    <input className="block w-full pl-10 pr-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg leading-5 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary sm:text-sm transition-all shadow-sm" placeholder="搜索项目、来源和笔记..." type="text"/>
+                                    <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                        <span className="text-xs text-slate-400 border border-slate-200 dark:border-slate-600 rounded px-1.5 py-0.5">⌘K</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="flex items-center space-x-4 ml-6">
+                                <div className="flex bg-slate-100 dark:bg-slate-800 rounded-lg p-1 border border-border-light dark:border-border-dark">
+                                    <button className="p-1.5 rounded-md bg-white dark:bg-slate-600 shadow-sm text-slate-900 dark:white">
+                                        <span className="material-symbols-outlined text-lg">grid_view</span>
+                                    </button>
+                                    <button className="p-1.5 rounded-md text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
+                                        <span className="material-symbols-outlined text-lg">format_list_bulleted</span>
+                                    </button>
+                                </div>
+                                <button className="p-2 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 transition-colors">
+                                    <span className="material-symbols-outlined">notifications</span>
+                                </button>
+                                <button className="p-2 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 transition-colors">
+                                    <span className="material-symbols-outlined">settings</span>
+                                </button>
+                                <button onClick={() => navigate('/notebook')} className="flex items-center px-4 py-2 bg-primary hover:bg-blue-700 text-white text-sm font-medium rounded-lg shadow-sm transition-all hover:shadow-md active:scale-95">
+                                    <span className="material-symbols-outlined mr-2 text-lg">add</span>
+                                    新建项目
+                                </button>
+                            </div>
+                        </header>
+                        
+                        <div className="flex-1 overflow-y-auto p-8 bg-background-light dark:bg-background-dark">
+                            <div className="max-w-7xl mx-auto">
+                                <div className="flex items-center justify-between mb-6">
+                                    <h2 className="text-2xl font-bold text-slate-900 dark:text-white">我的项目</h2>
+                                    <div className="flex items-center space-x-2">
+                                        <span className="text-sm text-slate-500 dark:text-slate-400">排序方式:</span>
+                                        <select className="text-sm border-none bg-transparent font-medium text-slate-700 dark:text-slate-200 focus:ring-0 cursor-pointer pr-8">
+                                            <option>最后修改时间</option>
+                                            <option>名称</option>
+                                            <option>创建日期</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                                    <div onClick={() => navigate('/notebook')} className="group relative flex flex-col items-center justify-center h-48 border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-xl hover:border-primary dark:hover:border-primary hover:bg-blue-50/50 dark:hover:bg-slate-800/50 cursor-pointer transition-all duration-200">
+                                        <div className="h-12 w-12 rounded-full bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                                            <span className="material-symbols-outlined text-primary text-3xl">add</span>
+                                        </div>
+                                        <span className="text-sm font-medium text-slate-600 dark:text-slate-300 group-hover:text-primary transition-colors">创建新项目</span>
+                                    </div>
+
+                                    {projects.map((proj) => (
+                                        <div key={proj.id} onClick={() => proj.link && navigate(proj.link)} className="group bg-surface-light dark:bg-surface-dark rounded-xl shadow-sm hover:shadow-lg border border-border-light dark:border-border-dark hover:border-primary dark:hover:border-primary overflow-hidden cursor-pointer transition-all duration-200 flex flex-col h-48">
+                                            <div className="p-5 flex flex-col h-full relative">
+                                                <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                    <button className="p-1 rounded-full hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+                                                        <span className="material-symbols-outlined text-lg">more_vert</span>
+                                                    </button>
+                                                </div>
+                                                <div className="flex items-start justify-between mb-4">
+                                                    <div className={`bg-${proj.color}-50 dark:bg-${proj.color}-900/30 p-2.5 rounded-lg border border-${proj.color}-100 dark:border-${proj.color}-800`}>
+                                                        <span className={`material-symbols-outlined text-3xl text-${proj.color}-600 dark:text-${proj.color}-400`}>{proj.icon}</span>
+                                                    </div>
+                                                </div>
+                                                <h3 className="text-base font-semibold text-slate-900 dark:text-white mb-1 group-hover:text-primary transition-colors">{proj.title}</h3>
+                                                <p className="text-xs text-slate-500 dark:text-slate-400 mt-auto line-clamp-1">{proj.updated} • {proj.sources}个来源</p>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+
+                                <div className="mt-12 mb-6">
+                                    <h2 className="text-lg font-bold text-slate-900 dark:text-white mb-4">建议操作</h2>
+                                    <div className="flex space-x-4 overflow-x-auto pb-4">
+                                        {[
+                                            { icon: 'auto_awesome', label: 'AI 洞察', text: '总结上周关于“供应商采购”的更新。' },
+                                            { icon: 'quiz', label: '测试我', text: '根据“世界历史笔记”创建一个练习测试。' },
+                                            { icon: 'mic', label: '音频概述', text: '生成关于“Claude 代理架构”的播客。' }
+                                        ].map((op, i) => (
+                                            <div key={i} className="flex-shrink-0 w-64 bg-white dark:bg-slate-800 p-4 rounded-lg border border-border-light dark:border-border-dark shadow-sm hover:shadow-md transition-shadow cursor-pointer">
+                                                <div className="flex items-center space-x-2 text-primary mb-2">
+                                                    <span className="material-symbols-outlined text-xl">{op.icon}</span>
+                                                    <span className="text-xs font-bold uppercase tracking-wider">{op.label}</span>
+                                                </div>
+                                                <p className="text-sm text-slate-700 dark:text-slate-300">{op.text}</p>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </main>
+                </div>
+            );
+        };
+
+        const NotebookStudio = () => {
+            const navigate = useNavigate();
+
+            return (
+                <div className="h-screen flex flex-col overflow-hidden bg-background-light dark:bg-background-dark transition-colors duration-200">
+                    <nav className="flex items-center justify-between px-6 py-3 shrink-0">
+                        <div className="flex items-center gap-3">
+                            <button onClick={() => navigate('/')} className="w-10 h-10 bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white">
+                                <span className="material-symbols-outlined text-2xl">all_inclusive</span>
+                            </button>
+                            <h1 className="text-xl font-medium text-gray-800 dark:text-white">安居信息化</h1>
+                        </div>
+                        <div className="flex items-center gap-4">
+                            <button className="bg-primary text-white px-5 py-2 rounded-full flex items-center gap-2 text-sm font-medium hover:opacity-90 transition shadow-sm">
+                                <span className="material-symbols-outlined text-[18px]">add</span>
+                                创建笔记本
+                            </button>
+                            <button className="p-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition flex items-center gap-1 text-sm font-medium px-3">
+                                <span className="material-symbols-outlined text-[20px]">share</span>
+                                分享
+                            </button>
+                            <button className="p-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition flex items-center gap-1 text-sm font-medium px-3">
+                                <span className="material-symbols-outlined text-[20px]">settings</span>
+                                设置
+                            </button>
+                            <button onClick={() => navigate('/')} className="p-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition">
+                                <span className="material-symbols-outlined">apps</span>
+                            </button>
+                            <div className="w-9 h-9 rounded-full bg-blue-200 overflow-hidden border border-gray-200 dark:border-gray-700">
+                                <img alt="User" className="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD76FDx9M6MRdL0zB6BnQ8uBLBJrTUunySs_POQgeT2Sw0ey-vSFTYqighMNK5iaSkwVZC13O-YLQfyTqbX8wEuSvaQUPw2TLs8yZvbGqogkiqTP9StjGa2s-XKKAeK3JV0uq75_dXQM9g1k0ivP6UX1x0NOZafJj62vTDTsIIY1mD6Rcal4o5-y_co4_GCcNf5X854OlzBzFiuBqQhpsbFqsMn14KHqfZTx22neDUPGXHujdj1_l3ShH-bLr95IM5V23ksj_w92suu"/>
+                            </div>
+                        </div>
+                    </nav>
+                    
+                    <main className="flex-1 flex gap-4 px-4 pb-4 min-h-0">
+                        {/* Sources Aside */}
+                        <aside className="w-[300px] bg-panel-light dark:bg-panel-dark rounded-3xl flex flex-col shadow-sm border border-transparent dark:border-border-dark overflow-hidden shrink-0">
+                            <div className="p-4 flex items-center justify-between border-b border-gray-100 dark:border-border-dark/50">
+                                <h2 className="font-medium text-lg">来源</h2>
+                                <button className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">
+                                    <span className="material-symbols-outlined text-xl">left_panel_close</span>
+                                </button>
+                            </div>
+                            <div className="flex-1 overflow-y-auto p-4 space-y-4">
+                                <button className="w-full border border-gray-200 dark:border-border-dark rounded-full py-2.5 px-4 text-sm text-gray-600 dark:text-gray-300 flex items-center justify-center gap-2 hover:bg-gray-50 dark:hover:bg-gray-800 transition">
+                                    <span className="material-symbols-outlined text-[18px]">add</span>
+                                    添加来源
+                                </button>
+                                <div className="bg-gradient-to-r from-blue-50 to-green-50 dark:from-blue-900/20 dark:to-green-900/20 p-3 rounded-xl text-xs text-gray-700 dark:text-gray-300 flex items-start gap-2 border border-blue-100 dark:border-blue-900/30">
+                                    <span className="material-symbols-outlined text-blue-600 dark:text-blue-400 text-sm mt-0.5">science</span>
+                                    <p><span className="text-blue-600 dark:text-blue-400 font-medium">试用 Deep Research</span>，获取深度报告和新来源！</p>
+                                </div>
+                                <div className="relative group">
+                                    <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
+                                        <span className="material-symbols-outlined text-gray-400 text-[20px]">search</span>
+                                    </div>
+                                    <input className="w-full pl-10 pr-4 py-3 bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-border-dark rounded-2xl text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition dark:placeholder-gray-500 dark:text-gray-200" placeholder="在网络中搜索新来源" type="text"/>
+                                    <div className="flex gap-2 mt-2">
+                                        <span className="flex items-center gap-1 text-[11px] bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-full px-2 py-1 text-gray-600 dark:text-gray-400 shadow-sm">
+                                            <span className="material-symbols-outlined text-[14px]">language</span> Web <span className="material-symbols-outlined text-[12px]">expand_more</span>
+                                        </span>
+                                        <span className="flex items-center gap-1 text-[11px] bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-full px-2 py-1 text-gray-600 dark:text-gray-400 shadow-sm">
+                                            <span className="material-symbols-outlined text-[14px]">bolt</span> Fast Research <span className="material-symbols-outlined text-[12px]">expand_more</span>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div className="space-y-1">
+                                    <div className="flex items-center justify-between py-2 text-xs text-gray-500 dark:text-gray-400 font-medium px-1">
+                                        <span>选择所有来源</span>
+                                        <input defaultChecked className="rounded border-gray-300 text-primary focus:ring-primary dark:bg-gray-700 dark:border-gray-600" type="checkbox"/>
+                                    </div>
+                                    {[
+                                        { name: '安居.jpg', icon: 'image', color: 'red' },
+                                        { name: '安居信息化系统功能清单.md', icon: 'markdown', color: 'blue' },
+                                        { name: '寓信.pdf', icon: 'picture_as_pdf', color: 'red' },
+                                        { name: '寓小二.pdf', icon: 'picture_as_pdf', color: 'red' },
+                                        { name: '寓盟.pdf', icon: 'picture_as_pdf', color: 'red' },
+                                    ].map((file, i) => (
+                                        <div key={i} className="flex items-center justify-between p-2 hover:bg-gray-50 dark:hover:bg-gray-800/50 rounded-lg group cursor-pointer transition">
+                                            <div className="flex items-center gap-3 overflow-hidden">
+                                                <div className={`w-8 h-8 rounded bg-${file.color}-100 dark:bg-${file.color}-900/30 flex items-center justify-center shrink-0`}>
+                                                    <span className={`material-symbols-outlined text-${file.color}-500 text-lg`}>{file.icon}</span>
+                                                </div>
+                                                <span className="text-sm text-gray-700 dark:text-gray-200 truncate">{file.name}</span>
+                                            </div>
+                                            <input defaultChecked className="rounded border-gray-300 text-primary focus:ring-primary dark:bg-gray-700 dark:border-gray-600" type="checkbox"/>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        </aside>
+
+                        {/* Chat Section */}
+                        <section className="flex-1 bg-panel-light dark:bg-panel-dark rounded-3xl flex flex-col shadow-sm border border-transparent dark:border-border-dark relative">
+                            <div className="p-4 flex items-center justify-between border-b border-gray-100 dark:border-border-dark/50 shrink-0">
+                                <h2 className="font-medium text-lg">对话</h2>
+                                <div className="flex items-center gap-2 text-gray-400">
+                                    <button className="hover:text-gray-600 dark:hover:text-gray-200"><span className="material-symbols-outlined">tune</span></button>
+                                    <button className="hover:text-gray-600 dark:hover:text-gray-200"><span className="material-symbols-outlined">more_vert</span></button>
+                                </div>
+                            </div>
+                            <div className="flex-1 overflow-y-auto p-8 space-y-8">
+                                <div className="flex justify-end">
+                                    <div className="bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-100 px-5 py-3 rounded-2xl rounded-tr-sm max-w-2xl text-[15px] leading-relaxed">
+                                        你把全部需求总结一下，一个看板一段话
+                                    </div>
+                                </div>
+                                <div className="flex flex-col gap-2 max-w-4xl">
+                                    <div className="prose dark:prose-invert max-w-none text-[15px] leading-7 text-gray-800 dark:text-gray-200">
+                                        <p className="mb-4">以下是为您整理的安居平台统计分析看板设计需求，每项需求均结合了来源信息中的核心功能与先进平台的优化逻辑：</p>
+                                        
+                                        <div className="mb-6">
+                                            <strong className="block text-gray-900 dark:text-white mb-1">1. 资产动态看板：深度的面积口径穿透</strong>
+                                            <p>
+                                                资产动态看板需从目前的房间/面积出租率基础统计升级为专业的<strong>面积口径动态监控</strong>，通过集成“本月/本年到期面积”、“续租面积”等核心指标卡片，并辅以环比或同比的升降趋势标识。
+                                            </p>
+                                        </div>
+
+                                        <div className="mb-6">
+                                            <strong className="block text-gray-900 dark:text-white mb-1">2. 运营风险看板：量化损失与财务预警</strong>
+                                            <p>
+                                                运营风险看板应将现有的总额收缴汇总转化为<strong>精细化的风险穿透分析</strong>，重点引入按底价与报价分别计算的“空置损失金额”统计图。
+                                            </p>
+                                        </div>
+
+                                        <div className="mb-6">
+                                            <strong className="block text-gray-900 dark:text-white mb-1">3. 人员效能看板：量化的管家绩效考核</strong>
+                                            <p>
+                                                人员效能看板旨在利用小程序端沉淀的作业数据建立<strong>透明化的员业绩排行榜</strong>，通过表格展示每位管家的关键指标，实现从“管房”到“管人”的跨越。
+                                            </p>
+                                        </div>
+
+                                        <div className="mb-6">
+                                            <strong className="block text-gray-900 dark:text-white mb-1">4. 租客画像看板：全方位的行为数据洞察</strong>
+                                            <p>
+                                                租客画像看板需补齐针对个人租客的<strong>多维度属性分析</strong>，自动生成可视化图表，帮助运营端精准策划社区活动或调整租赁定价方案。
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div className="flex gap-2 mt-2">
+                                        <div className="h-1.5 w-1.5 rounded-full bg-gray-300 dark:bg-gray-600 animate-pulse"></div>
+                                        <div className="h-1.5 w-1.5 rounded-full bg-gray-300 dark:bg-gray-600 animate-pulse delay-75"></div>
+                                        <div className="h-1.5 w-1.5 rounded-full bg-gray-300 dark:bg-gray-600 animate-pulse delay-150"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="p-4 bg-white dark:bg-panel-dark rounded-b-3xl shrink-0">
+                                <div className="relative bg-background-light dark:bg-background-dark rounded-3xl p-1.5 pl-4 flex items-center shadow-inner">
+                                    <input className="flex-1 bg-transparent border-none focus:ring-0 text-sm py-3 text-gray-800 dark:text-gray-200 placeholder-gray-500" placeholder="开始输入..." type="text"/>
+                                    <div className="flex items-center gap-1 pr-1">
+                                        <span className="text-xs text-gray-400 mr-2">6 个来源</span>
+                                        <button className="w-9 h-9 flex items-center justify-center rounded-full bg-primary hover:opacity-90 transition text-white">
+                                            <span className="material-symbols-outlined text-lg">arrow_forward</span>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div className="text-center mt-2">
+                                    <p className="text-[10px] text-gray-400 dark:text-gray-600">NotebookLM 提供的内容未必准确，因此请仔细核查回答内容。</p>
+                                </div>
+                            </div>
+                        </section>
+
+                        {/* Workspace Aside */}
+                        <aside className="w-[340px] bg-panel-light dark:bg-panel-dark rounded-3xl flex flex-col shadow-sm border border-transparent dark:border-border-dark shrink-0 relative overflow-hidden">
+                            <div className="p-4 flex items-center justify-between border-b border-gray-100 dark:border-border-dark/50">
+                                <h2 className="font-medium text-lg">工作区</h2>
+                                <button className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">
+                                    <span className="material-symbols-outlined text-xl">right_panel_close</span>
+                                </button>
+                            </div>
+                            <div className="flex-1 overflow-y-auto p-4">
+                                <div className="grid grid-cols-2 gap-3">
+                                    <div className="col-span-2 bg-orange-100 dark:bg-orange-900/20 p-4 rounded-2xl flex items-center gap-4 cursor-pointer hover:shadow-md transition group relative overflow-hidden">
+                                        <div className="w-12 h-12 rounded-2xl bg-white/80 dark:bg-orange-500/20 text-orange-600 dark:text-orange-300 flex items-center justify-center shrink-0 shadow-sm">
+                                            <span className="material-symbols-outlined text-2xl">slideshow</span>
+                                        </div>
+                                        <div className="flex-1 z-10">
+                                            <h3 className="font-bold text-gray-800 dark:text-gray-100">PPT 生成</h3>
+                                            <p className="text-xs text-gray-600 dark:text-gray-400 mt-0.5">一键生成演示文稿</p>
+                                        </div>
+                                    </div>
+                                    <div className="col-span-2 bg-blue-100 dark:bg-blue-900/20 p-4 rounded-2xl flex items-center gap-4 cursor-pointer hover:shadow-md transition group relative overflow-hidden">
+                                        <div className="w-12 h-12 rounded-2xl bg-white/80 dark:bg-blue-500/20 text-blue-600 dark:text-blue-300 flex items-center justify-center shrink-0 shadow-sm">
+                                            <span className="material-symbols-outlined text-2xl">analytics</span>
+                                        </div>
+                                        <div className="flex-1 z-10">
+                                            <h3 className="font-bold text-gray-800 dark:text-gray-100">分析报告</h3>
+                                            <p className="text-xs text-gray-600 dark:text-gray-400 mt-0.5">深度数据洞察与趋势</p>
+                                        </div>
+                                    </div>
+                                    {[
+                                        { icon: 'account_tree', label: '思维导图', color: 'violet' },
+                                        { icon: 'draw', label: '绘图', color: 'rose' },
+                                        { icon: 'graphic_eq', label: '音频', color: 'emerald' },
+                                        { icon: 'summarize', label: '摘要', color: 'amber' },
+                                    ].map((item, i) => (
+                                        <div key={i} className={`bg-${item.color}-100 dark:bg-${item.color}-900/20 p-4 rounded-2xl flex flex-col gap-3 cursor-pointer hover:shadow-md transition group relative h-32 justify-between`}>
+                                            <div className={`w-10 h-10 rounded-xl bg-white/80 dark:bg-${item.color}-500/20 text-${item.color}-600 dark:text-${item.color}-300 flex items-center justify-center shadow-sm`}>
+                                                <span className="material-symbols-outlined text-xl">{item.icon}</span>
+                                            </div>
+                                            <span className="font-semibold text-sm text-gray-800 dark:text-gray-200">{item.label}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                                <div className="flex flex-col items-center justify-center mt-12 text-center space-y-3 pb-24">
+                                    <span className="material-symbols-outlined text-gray-300 dark:text-gray-600 text-4xl">inbox</span>
+                                    <p className="text-xs text-gray-400 dark:text-gray-500 max-w-[200px]">工作区内容将保存在此处。<br/>选择工具开始创作。</p>
+                                </div>
+                            </div>
+                            <div className="absolute bottom-6 right-6">
+                                <div className="flex flex-col gap-3 items-end">
+                                    <button className="w-10 h-10 rounded-full bg-white dark:bg-gray-700 shadow-md text-gray-500 dark:text-gray-300 flex items-center justify-center hover:bg-gray-50 dark:hover:bg-gray-600 transition">
+                                        <span className="material-symbols-outlined">dashboard</span>
+                                    </button>
+                                    <button className="w-10 h-10 rounded-full bg-pink-100 dark:bg-pink-900/50 shadow-md text-pink-500 dark:text-pink-300 flex items-center justify-center hover:bg-pink-200 dark:hover:bg-pink-900/70 transition">
+                                        <span className="material-symbols-outlined">translate</span>
+                                    </button>
+                                    <button className="bg-primary hover:opacity-90 text-white rounded-full px-5 py-2.5 shadow-lg flex items-center gap-2 text-sm font-medium transition">
+                                        <span className="material-symbols-outlined text-[18px]">post_add</span>
+                                        添加笔记
+                                    </button>
+                                </div>
+                            </div>
+                        </aside>
+                    </main>
+                </div>
+            );
+        };
+
+        // --- Main App ---
+
+        const App = () => {
+            return (
+                <MemoryRouter>
+                    <Routes>
+                        <Route path="/" element={<Dashboard />} />
+                        <Route path="/notebook" element={<NotebookStudio />} />
+                    </Routes>
+                </MemoryRouter>
+            );
+        };
+
+        const root = createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>

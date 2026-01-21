@@ -1,0 +1,51 @@
+/* PPT 表格元素样式 */
+
+.ppt-table-element {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.ppt-table {
+  width: 100%;
+  height: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.ppt-table td {
+  border-style: solid;
+  position: relative;
+}
+
+.cell-content {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cell-input {
+  width: 100%;
+  height: 100%;
+  padding: 4px;
+  font-size: inherit;
+  font-weight: inherit;
+  text-align: inherit;
+  border: 2px solid var(--primary-color, #5aa7a0);
+  border-radius: 2px;
+  background: white;
+  color: inherit;
+  outline: none;
+}
+
+/* 迷你模式 */
+.ppt-table-element.mini .ppt-table {
+  font-size: 6px;
+}
+
+.ppt-table-element.mini td {
+  padding: 2px;
+}

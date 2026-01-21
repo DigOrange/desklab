@@ -1,0 +1,344 @@
+.search-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 15vh;
+  z-index: 1000;
+  animation: fadeIn 150ms ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.search-dialog {
+  width: 560px;
+  max-height: 70vh;
+  background: var(--color-bg-secondary);
+  border-radius: 12px;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.4);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  animation: slideDown 150ms ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.search-input-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.search-icon {
+  color: var(--color-text-muted);
+  font-size: 22px;
+}
+
+.search-input {
+  flex: 1;
+  font-size: 16px;
+  background: transparent;
+  color: var(--color-text);
+}
+
+.search-input::placeholder {
+  color: var(--color-text-muted);
+}
+
+.search-shortcut {
+  padding: 4px 8px;
+  background: var(--color-bg-tertiary);
+  border-radius: 4px;
+  font-size: 11px;
+  color: var(--color-text-muted);
+  font-family: inherit;
+}
+
+.search-mode-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--color-border);
+  background: var(--color-bg-tertiary);
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  transition: all 150ms ease;
+}
+
+.search-mode-toggle .material-icon {
+  font-size: 16px;
+}
+
+.search-mode-toggle:hover {
+  border-color: var(--color-primary-border);
+  color: var(--color-primary-text);
+}
+
+.search-mode-toggle.active {
+  border-color: var(--color-primary-border);
+  background: var(--color-primary-bg);
+  color: var(--color-primary-text);
+}
+
+.search-results {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 100px;
+  max-height: 400px;
+}
+
+.search-loading,
+.search-empty,
+.search-hint {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+  color: var(--color-text-secondary);
+  gap: 8px;
+}
+
+.search-empty .material-icon {
+  font-size: 40px;
+  color: var(--color-text-muted);
+}
+
+.search-tips {
+  display: flex;
+  gap: 16px;
+  margin-top: 8px;
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+.search-tips kbd {
+  padding: 2px 6px;
+  background: var(--color-bg-tertiary);
+  border-radius: 3px;
+  font-size: 11px;
+  margin-right: 4px;
+}
+
+.results-list {
+  list-style: none;
+  padding: 8px;
+}
+
+.result-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  text-align: left;
+  transition: background 100ms ease;
+}
+
+.result-item:hover,
+.result-item.selected {
+  background: var(--color-bg-tertiary);
+}
+
+.result-item.selected {
+  background: rgba(90, 167, 160, 0.2);
+}
+
+.result-icon {
+  color: var(--color-text-secondary);
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.result-content {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.result-title {
+  font-size: 14px;
+  color: var(--color-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.result-snippet {
+  font-size: 12px;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.result-type {
+  font-size: 11px;
+  color: var(--color-text-muted);
+  padding: 2px 8px;
+  background: var(--color-bg-tertiary);
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.result-score {
+  font-size: 11px;
+  color: var(--color-primary-text);
+  padding: 2px 6px;
+  background: var(--color-primary-bg);
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.result-time {
+  font-size: 11px;
+  color: var(--color-text-muted);
+  flex-shrink: 0;
+}
+
+/* 过滤器按钮 */
+.search-filter-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  border: 1px solid var(--color-border);
+  background: var(--color-bg-tertiary);
+  color: var(--color-text-secondary);
+  transition: all 150ms ease;
+}
+
+.search-filter-toggle .material-icon {
+  font-size: 18px;
+}
+
+.search-filter-toggle:hover {
+  border-color: var(--color-primary-border);
+  color: var(--color-primary-text);
+}
+
+.search-filter-toggle.has-filters {
+  border-color: var(--color-primary-border);
+  background: var(--color-primary-bg);
+  color: var(--color-primary-text);
+}
+
+/* 过滤器面板 */
+.search-filters {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 20px;
+  background: var(--color-bg-tertiary);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.filter-section {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.filter-label {
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+.filter-chips {
+  display: flex;
+  gap: 6px;
+}
+
+.filter-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--color-border);
+  background: var(--color-bg-secondary);
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  transition: all 150ms ease;
+}
+
+.filter-chip .material-icon {
+  font-size: 14px;
+}
+
+.filter-chip:hover {
+  border-color: var(--color-text-muted);
+}
+
+.filter-chip.active {
+  border-color: var(--color-primary-border);
+  background: var(--color-primary-bg);
+  color: var(--color-primary-text);
+}
+
+.filter-select {
+  padding: 4px 24px 4px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--color-border);
+  background: var(--color-bg-secondary);
+  font-size: 12px;
+  color: var(--color-text);
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23888888' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+}
+
+.filter-select:hover {
+  border-color: var(--color-text-muted);
+}
+
+.filter-select:focus {
+  outline: none;
+  border-color: var(--color-primary-border);
+}
+
+.filter-clear {
+  margin-left: auto;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  color: var(--color-text-muted);
+  transition: all 150ms ease;
+}
+
+.filter-clear:hover {
+  background: var(--color-bg-hover);
+  color: var(--color-text);
+}
+
+.search-empty-hint {
+  font-size: 12px;
+  color: var(--color-text-muted);
+  margin: 0;
+}

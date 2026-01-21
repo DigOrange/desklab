@@ -1,0 +1,832 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>DeskLab - 画布</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap");
+
+      :root {
+        --bg: #f6f2ea;
+        --panel: rgba(255, 255, 255, 0.86);
+        --stroke: rgba(132, 126, 112, 0.22);
+        --stroke-strong: rgba(132, 126, 112, 0.36);
+        --text: #2c3136;
+        --text-dim: #4c5258;
+        --text-muted: #7a8087;
+        --accent: #5aa7a0;
+        --accent-2: #d8a25a;
+        --accent-3: #7d9ad6;
+        --shadow: 0 18px 40px rgba(58, 48, 32, 0.12);
+        --radius-lg: 18px;
+        --radius-md: 12px;
+        --radius-sm: 8px;
+        --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+      }
+
+      * { box-sizing: border-box; }
+      html, body { height: 100%; margin: 0; }
+
+      body {
+        background: #faf9f7;
+        color: var(--text);
+        font-family: "IBM Plex Sans", sans-serif;
+      }
+
+      .app {
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* Top Toolbar */
+      .toolbar-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 16px;
+        background: var(--panel);
+        border-bottom: 1px solid var(--stroke);
+        backdrop-filter: blur(16px);
+      }
+
+      .toolbar-left {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+
+      .back-btn {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 8px 12px;
+        border-radius: var(--radius-sm);
+        border: 1px solid var(--stroke);
+        background: rgba(255, 255, 255, 0.8);
+        color: var(--text-dim);
+        font-size: 12px;
+        cursor: pointer;
+      }
+
+      .canvas-title {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .canvas-title h1 {
+        font-size: 16px;
+        font-family: "Fraunces", serif;
+        margin: 0;
+      }
+
+      .canvas-title input {
+        font-size: 16px;
+        font-family: "Fraunces", serif;
+        background: transparent;
+        border: none;
+        border-bottom: 2px solid transparent;
+        padding: 4px 0;
+        outline: none;
+        color: var(--text);
+      }
+
+      .canvas-title input:focus {
+        border-bottom-color: var(--accent);
+      }
+
+      .pill {
+        padding: 6px 10px;
+        border-radius: 999px;
+        font-size: 11px;
+        border: 1px solid var(--stroke);
+        color: var(--text-dim);
+        background: rgba(255, 255, 255, 0.6);
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .pill.success {
+        border-color: rgba(90, 167, 160, 0.5);
+        background: rgba(90, 167, 160, 0.1);
+        color: #285753;
+      }
+
+      .toolbar-center {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        padding: 6px;
+        background: rgba(255, 255, 255, 0.8);
+        border: 1px solid var(--stroke);
+        border-radius: var(--radius-md);
+      }
+
+      .tool-btn {
+        width: 36px;
+        height: 36px;
+        border-radius: var(--radius-sm);
+        border: none;
+        background: transparent;
+        color: var(--text-dim);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+
+      .tool-btn:hover {
+        background: rgba(0, 0, 0, 0.05);
+        color: var(--text);
+      }
+
+      .tool-btn.active {
+        background: rgba(90, 167, 160, 0.15);
+        color: #285753;
+      }
+
+      .tool-divider {
+        width: 1px;
+        height: 24px;
+        background: var(--stroke);
+        margin: 0 4px;
+      }
+
+      .toolbar-right {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .action-btn {
+        padding: 8px 14px;
+        border-radius: var(--radius-sm);
+        border: 1px solid var(--stroke);
+        background: rgba(255, 255, 255, 0.8);
+        color: var(--text-dim);
+        font-size: 12px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .action-btn.primary {
+        border-color: rgba(90, 167, 160, 0.5);
+        background: rgba(90, 167, 160, 0.15);
+        color: #285753;
+      }
+
+      /* Canvas Area */
+      .canvas-container {
+        flex: 1;
+        position: relative;
+        overflow: hidden;
+        background:
+          radial-gradient(circle at 50% 50%, rgba(255,255,255,0.8) 0%, transparent 70%),
+          linear-gradient(90deg, rgba(200,200,200,0.1) 1px, transparent 1px),
+          linear-gradient(rgba(200,200,200,0.1) 1px, transparent 1px);
+        background-size: 100% 100%, 20px 20px, 20px 20px;
+      }
+
+      .canvas-content {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      /* Sample Canvas Elements */
+      .canvas-element {
+        position: absolute;
+        cursor: move;
+      }
+
+      .shape-rect {
+        width: 180px;
+        height: 100px;
+        border: 2px solid #364fc7;
+        border-radius: 8px;
+        background: rgba(224, 231, 255, 0.6);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        color: #364fc7;
+      }
+
+      .shape-ellipse {
+        width: 140px;
+        height: 90px;
+        border: 2px solid #0b7285;
+        border-radius: 50%;
+        background: rgba(199, 236, 238, 0.6);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        color: #0b7285;
+      }
+
+      .shape-diamond {
+        width: 120px;
+        height: 120px;
+        border: 2px solid #e67700;
+        background: rgba(255, 244, 230, 0.6);
+        transform: rotate(45deg);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .shape-diamond span {
+        transform: rotate(-45deg);
+        font-size: 12px;
+        color: #e67700;
+      }
+
+      .text-element {
+        font-size: 18px;
+        font-family: "Fraunces", serif;
+        color: var(--text);
+        padding: 8px;
+        border: 2px dashed transparent;
+      }
+
+      .text-element:hover {
+        border-color: var(--accent);
+      }
+
+      .sticky-note {
+        width: 160px;
+        padding: 16px;
+        background: #fff9db;
+        border: 1px solid #ffe066;
+        border-radius: 4px;
+        box-shadow: 2px 2px 8px rgba(0,0,0,0.1);
+        font-size: 13px;
+        color: #5c4813;
+        transform: rotate(-2deg);
+      }
+
+      .arrow-line {
+        position: absolute;
+        width: 120px;
+        height: 2px;
+        background: #495057;
+      }
+
+      .arrow-line::after {
+        content: "";
+        position: absolute;
+        right: -2px;
+        top: -4px;
+        border: 5px solid transparent;
+        border-left-color: #495057;
+      }
+
+      /* Selection Box */
+      .selection-box {
+        position: absolute;
+        border: 2px solid var(--accent);
+        background: rgba(90, 167, 160, 0.1);
+        pointer-events: none;
+      }
+
+      .selection-handle {
+        position: absolute;
+        width: 8px;
+        height: 8px;
+        background: white;
+        border: 2px solid var(--accent);
+        border-radius: 2px;
+      }
+
+      /* Left Sidebar */
+      .sidebar-left {
+        position: absolute;
+        left: 16px;
+        top: 50%;
+        transform: translateY(-50%);
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        padding: 8px;
+        background: var(--panel);
+        border: 1px solid var(--stroke);
+        border-radius: var(--radius-md);
+        box-shadow: var(--shadow);
+      }
+
+      /* Right Panel */
+      .panel-right {
+        position: absolute;
+        right: 16px;
+        top: 16px;
+        width: 260px;
+        background: var(--panel);
+        border: 1px solid var(--stroke);
+        border-radius: var(--radius-md);
+        box-shadow: var(--shadow);
+        backdrop-filter: blur(16px);
+      }
+
+      .panel-header {
+        padding: 12px 14px;
+        border-bottom: 1px solid var(--stroke);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .panel-header h3 {
+        margin: 0;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 1.4px;
+        color: var(--text-muted);
+      }
+
+      .panel-content {
+        padding: 14px;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+      }
+
+      .prop-group {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .prop-label {
+        font-size: 11px;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+
+      .prop-row {
+        display: flex;
+        gap: 8px;
+      }
+
+      .prop-input {
+        flex: 1;
+        padding: 8px 10px;
+        border: 1px solid var(--stroke);
+        border-radius: var(--radius-sm);
+        background: rgba(255, 255, 255, 0.8);
+        font-size: 12px;
+        color: var(--text);
+        outline: none;
+      }
+
+      .prop-input:focus {
+        border-color: var(--accent);
+      }
+
+      .color-picker {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+      }
+
+      .color-swatch {
+        width: 24px;
+        height: 24px;
+        border-radius: 6px;
+        border: 2px solid transparent;
+        cursor: pointer;
+        transition: transform 0.2s ease;
+      }
+
+      .color-swatch:hover {
+        transform: scale(1.1);
+      }
+
+      .color-swatch.active {
+        border-color: var(--text);
+      }
+
+      .stroke-picker {
+        display: flex;
+        gap: 6px;
+      }
+
+      .stroke-option {
+        flex: 1;
+        padding: 8px;
+        border: 1px solid var(--stroke);
+        border-radius: var(--radius-sm);
+        background: rgba(255, 255, 255, 0.8);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+      }
+
+      .stroke-option.active {
+        border-color: var(--accent);
+        background: rgba(90, 167, 160, 0.1);
+      }
+
+      /* Bottom Toolbar */
+      .toolbar-bottom {
+        position: absolute;
+        bottom: 16px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 16px;
+        background: var(--panel);
+        border: 1px solid var(--stroke);
+        border-radius: var(--radius-md);
+        box-shadow: var(--shadow);
+      }
+
+      .zoom-controls {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .zoom-btn {
+        width: 28px;
+        height: 28px;
+        border-radius: 6px;
+        border: 1px solid var(--stroke);
+        background: rgba(255, 255, 255, 0.8);
+        color: var(--text-dim);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+      }
+
+      .zoom-level {
+        font-size: 12px;
+        color: var(--text-dim);
+        min-width: 50px;
+        text-align: center;
+      }
+
+      /* Linked Documents Panel */
+      .linked-panel {
+        position: absolute;
+        right: 16px;
+        bottom: 16px;
+        width: 260px;
+        background: var(--panel);
+        border: 1px solid var(--stroke);
+        border-radius: var(--radius-md);
+        box-shadow: var(--shadow);
+      }
+
+      .linked-item {
+        padding: 10px 14px;
+        border-bottom: 1px solid var(--stroke);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 12px;
+        color: var(--text-dim);
+        cursor: pointer;
+      }
+
+      .linked-item:last-child {
+        border-bottom: none;
+      }
+
+      .linked-item:hover {
+        background: rgba(90, 167, 160, 0.05);
+      }
+
+      .linked-icon {
+        width: 28px;
+        height: 28px;
+        border-radius: 6px;
+        background: rgba(122, 162, 255, 0.15);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--accent-3);
+      }
+
+      .chip {
+        padding: 4px 8px;
+        border-radius: 999px;
+        font-size: 10px;
+        border: 1px solid var(--stroke);
+        color: var(--text-muted);
+        background: rgba(255, 255, 255, 0.65);
+      }
+
+      /* Animations */
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+
+      .animate-in {
+        animation: fadeIn 0.4s var(--ease) both;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app">
+      <!-- Top Toolbar -->
+      <div class="toolbar-top animate-in">
+        <div class="toolbar-left">
+          <button class="back-btn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+              <path d="M19 12H5M5 12L12 19M5 12L12 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            返回编辑器
+          </button>
+          <div class="canvas-title">
+            <input type="text" value="系统架构图.canvas" />
+            <span class="pill success">已保存</span>
+          </div>
+        </div>
+
+        <div class="toolbar-center">
+          <button class="tool-btn" title="选择">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+              <path d="M5 3L19 12L12 14L9 21L5 3Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <button class="tool-btn active" title="矩形">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+              <rect x="4" y="4" width="16" height="16" rx="2" stroke="currentColor" stroke-width="1.6"/>
+            </svg>
+          </button>
+          <button class="tool-btn" title="椭圆">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+              <ellipse cx="12" cy="12" rx="8" ry="6" stroke="currentColor" stroke-width="1.6"/>
+            </svg>
+          </button>
+          <button class="tool-btn" title="菱形">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+              <path d="M12 3L21 12L12 21L3 12L12 3Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <div class="tool-divider"></div>
+          <button class="tool-btn" title="箭头">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+              <path d="M5 12H19M19 12L14 7M19 12L14 17" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <button class="tool-btn" title="线条">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+              <path d="M5 19L19 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+            </svg>
+          </button>
+          <button class="tool-btn" title="画笔">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+              <path d="M3 21C3 21 7 17 9 15C11 13 17 7 19 5C21 3 21 3 19 5C17 7 11 13 9 15C7 17 3 21 3 21Z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <div class="tool-divider"></div>
+          <button class="tool-btn" title="文字">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+              <path d="M4 7V5H20V7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M12 5V19" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+              <path d="M8 19H16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+            </svg>
+          </button>
+          <button class="tool-btn" title="便签">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+              <path d="M4 4H20V16L16 20H4V4Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+              <path d="M16 16V20" stroke="currentColor" stroke-width="1.6"/>
+            </svg>
+          </button>
+          <button class="tool-btn" title="图片">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+              <rect x="4" y="4" width="16" height="16" rx="2" stroke="currentColor" stroke-width="1.6"/>
+              <circle cx="9" cy="9" r="2" stroke="currentColor" stroke-width="1.6"/>
+              <path d="M4 16L8 12L12 16L16 11L20 16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
+
+        <div class="toolbar-right">
+          <button class="action-btn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+              <path d="M4 12V20H20V12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M12 3V15M12 15L8 11M12 15L16 11" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            导出
+          </button>
+          <button class="action-btn primary">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+              <path d="M10 13L14 9M14 9H10M14 9V13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M5 5H12V19H5V5Z" stroke="currentColor" stroke-width="1.6"/>
+            </svg>
+            嵌入文档
+          </button>
+        </div>
+      </div>
+
+      <!-- Canvas Area -->
+      <div class="canvas-container">
+        <div class="canvas-content">
+          <!-- Sample Elements -->
+          <div class="canvas-element" style="left: 120px; top: 80px;">
+            <div class="shape-rect">用户界面</div>
+          </div>
+
+          <div class="canvas-element" style="left: 400px; top: 80px;">
+            <div class="shape-rect" style="border-color: #2f9e44; background: rgba(211, 249, 216, 0.6); color: #2f9e44;">
+              API 服务
+            </div>
+          </div>
+
+          <div class="canvas-element" style="left: 680px; top: 80px;">
+            <div class="shape-ellipse">数据库</div>
+          </div>
+
+          <div class="canvas-element" style="left: 400px; top: 250px;">
+            <div class="shape-diamond"><span>决策</span></div>
+          </div>
+
+          <div class="canvas-element" style="left: 120px; top: 280px;">
+            <div class="sticky-note">
+              待办：添加缓存层<br/>优先级：高
+            </div>
+          </div>
+
+          <div class="canvas-element text-element" style="left: 120px; top: 30px;">
+            系统架构概览
+          </div>
+
+          <!-- Selection Box Example -->
+          <div class="canvas-element" style="left: 395px; top: 75px;">
+            <div class="selection-box" style="width: 190px; height: 110px;">
+              <div class="selection-handle" style="top: -5px; left: -5px;"></div>
+              <div class="selection-handle" style="top: -5px; right: -5px;"></div>
+              <div class="selection-handle" style="bottom: -5px; left: -5px;"></div>
+              <div class="selection-handle" style="bottom: -5px; right: -5px;"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Left Sidebar -->
+        <div class="sidebar-left animate-in" style="animation-delay: 0.1s;">
+          <button class="tool-btn" title="手型工具">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+              <path d="M18 11V6C18 5.44772 17.5523 5 17 5C16.4477 5 16 5.44772 16 6V11" stroke="currentColor" stroke-width="1.6"/>
+              <path d="M14 11V4C14 3.44772 13.5523 3 13 3C12.4477 3 12 3.44772 12 4V11" stroke="currentColor" stroke-width="1.6"/>
+              <path d="M12 11V6C12 5.44772 11.5523 5 11 5C10.4477 5 10 5.44772 10 6V11" stroke="currentColor" stroke-width="1.6"/>
+              <path d="M10 11V8C10 7.44772 9.55228 7 9 7C8.44772 7 8 7.44772 8 8V15C8 18.3137 10.6863 21 14 21C17.3137 21 20 18.3137 20 15V11C20 10.4477 19.5523 10 19 10C18.4477 10 18 10.4477 18 11" stroke="currentColor" stroke-width="1.6"/>
+            </svg>
+          </button>
+          <button class="tool-btn" title="锁定">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+              <rect x="5" y="11" width="14" height="10" rx="2" stroke="currentColor" stroke-width="1.6"/>
+              <path d="M8 11V7C8 4.79086 9.79086 3 12 3C14.2091 3 16 4.79086 16 7V11" stroke="currentColor" stroke-width="1.6"/>
+            </svg>
+          </button>
+          <button class="tool-btn" title="图层">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+              <path d="M12 3L3 8L12 13L21 8L12 3Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+              <path d="M3 12L12 17L21 12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M3 16L12 21L21 16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Right Properties Panel -->
+        <div class="panel-right animate-in" style="animation-delay: 0.15s;">
+          <div class="panel-header">
+            <h3>属性</h3>
+            <span class="chip">矩形</span>
+          </div>
+          <div class="panel-content">
+            <div class="prop-group">
+              <span class="prop-label">位置</span>
+              <div class="prop-row">
+                <input class="prop-input" type="text" value="400" placeholder="X" />
+                <input class="prop-input" type="text" value="80" placeholder="Y" />
+              </div>
+            </div>
+            <div class="prop-group">
+              <span class="prop-label">尺寸</span>
+              <div class="prop-row">
+                <input class="prop-input" type="text" value="180" placeholder="宽" />
+                <input class="prop-input" type="text" value="100" placeholder="高" />
+              </div>
+            </div>
+            <div class="prop-group">
+              <span class="prop-label">填充颜色</span>
+              <div class="color-picker">
+                <div class="color-swatch" style="background: transparent; border: 1px dashed #ccc;"></div>
+                <div class="color-swatch" style="background: #e0e7ff;"></div>
+                <div class="color-swatch active" style="background: #d3f9d8;"></div>
+                <div class="color-swatch" style="background: #c7ecee;"></div>
+                <div class="color-swatch" style="background: #fff9db;"></div>
+                <div class="color-swatch" style="background: #fee2e2;"></div>
+                <div class="color-swatch" style="background: #f3e8ff;"></div>
+                <div class="color-swatch" style="background: #e5e7eb;"></div>
+              </div>
+            </div>
+            <div class="prop-group">
+              <span class="prop-label">边框颜色</span>
+              <div class="color-picker">
+                <div class="color-swatch" style="background: #000;"></div>
+                <div class="color-swatch" style="background: #364fc7;"></div>
+                <div class="color-swatch active" style="background: #2f9e44;"></div>
+                <div class="color-swatch" style="background: #0b7285;"></div>
+                <div class="color-swatch" style="background: #e67700;"></div>
+                <div class="color-swatch" style="background: #c92a2a;"></div>
+              </div>
+            </div>
+            <div class="prop-group">
+              <span class="prop-label">边框样式</span>
+              <div class="stroke-picker">
+                <div class="stroke-option active">
+                  <svg width="40" height="2"><line x1="0" y1="1" x2="40" y2="1" stroke="#333" stroke-width="2"/></svg>
+                </div>
+                <div class="stroke-option">
+                  <svg width="40" height="2"><line x1="0" y1="1" x2="40" y2="1" stroke="#333" stroke-width="2" stroke-dasharray="6,4"/></svg>
+                </div>
+                <div class="stroke-option">
+                  <svg width="40" height="2"><line x1="0" y1="1" x2="40" y2="1" stroke="#333" stroke-width="2" stroke-dasharray="2,2"/></svg>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bottom Toolbar -->
+        <div class="toolbar-bottom animate-in" style="animation-delay: 0.2s;">
+          <div class="zoom-controls">
+            <button class="zoom-btn">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                <path d="M5 12H19" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+              </svg>
+            </button>
+            <span class="zoom-level">100%</span>
+            <button class="zoom-btn">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                <path d="M12 5V19M5 12H19" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+              </svg>
+            </button>
+          </div>
+          <div class="tool-divider"></div>
+          <button class="zoom-btn" title="适应屏幕">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+              <path d="M4 8V4H8M16 4H20V8M20 16V20H16M8 20H4V16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <button class="zoom-btn" title="网格">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+              <path d="M3 3H10V10H3V3Z" stroke="currentColor" stroke-width="1.6"/>
+              <path d="M14 3H21V10H14V3Z" stroke="currentColor" stroke-width="1.6"/>
+              <path d="M3 14H10V21H3V14Z" stroke="currentColor" stroke-width="1.6"/>
+              <path d="M14 14H21V21H14V14Z" stroke="currentColor" stroke-width="1.6"/>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Linked Documents Panel -->
+        <div class="linked-panel animate-in" style="animation-delay: 0.25s;">
+          <div class="panel-header">
+            <h3>关联文档</h3>
+            <span class="chip">2 个</span>
+          </div>
+          <div class="linked-item">
+            <div class="linked-icon">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                <path d="M6 2H14L20 8V22H6V2Z" stroke="currentColor" stroke-width="1.6"/>
+              </svg>
+            </div>
+            <div>
+              <div style="font-weight: 500; color: var(--text);">技术方案.md</div>
+              <div style="font-size: 10px; color: var(--text-muted);">嵌入于第 45 行</div>
+            </div>
+          </div>
+          <div class="linked-item">
+            <div class="linked-icon">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                <path d="M6 2H14L20 8V22H6V2Z" stroke="currentColor" stroke-width="1.6"/>
+              </svg>
+            </div>
+            <div>
+              <div style="font-weight: 500; color: var(--text);">系统设计.md</div>
+              <div style="font-size: 10px; color: var(--text-muted);">嵌入于第 12 行</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

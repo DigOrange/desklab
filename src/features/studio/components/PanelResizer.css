@@ -1,0 +1,57 @@
+/* 面板拖动调整大小组件样式 */
+
+.panel-resizer {
+  position: relative;
+  width: 6px;
+  flex-shrink: 0;
+  cursor: col-resize;
+  z-index: 10;
+  transition: background-color 0.15s;
+}
+
+.panel-resizer:hover,
+.panel-resizer.dragging {
+  background-color: var(--primary-color-alpha, rgba(90, 167, 160, 0.15));
+}
+
+/* 左侧位置（chat 和 workspace 之间） */
+.panel-resizer.left {
+  margin-left: -3px;
+  margin-right: -3px;
+}
+
+/* 右侧位置（workspace 和其他之间） */
+.panel-resizer.right {
+  margin-left: -3px;
+  margin-right: -3px;
+}
+
+/* 调整手柄 */
+.resizer-handle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 4px;
+  height: 32px;
+  background-color: var(--border-color, #e5e7eb);
+  border-radius: 2px;
+  transition: all 0.15s;
+}
+
+.panel-resizer:hover .resizer-handle,
+.panel-resizer.dragging .resizer-handle {
+  background-color: var(--primary-color, #5AA7A0);
+  height: 48px;
+}
+
+/* 拖动时的视觉反馈 */
+.panel-resizer.dragging {
+  background-color: var(--primary-color-alpha, rgba(90, 167, 160, 0.2));
+}
+
+.panel-resizer.dragging .resizer-handle {
+  width: 4px;
+  background-color: var(--primary-color, #5AA7A0);
+  box-shadow: 0 0 8px var(--primary-color-alpha, rgba(90, 167, 160, 0.4));
+}

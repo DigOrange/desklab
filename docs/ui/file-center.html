@@ -1,0 +1,947 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>DeskLab - 文件中心</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap");
+
+      :root {
+        --bg: #f6f2ea;
+        --bg-2: #eef3ec;
+        --bg-3: #f8f6f1;
+        --panel: rgba(255, 255, 255, 0.86);
+        --panel-strong: #ffffff;
+        --stroke: rgba(132, 126, 112, 0.22);
+        --stroke-strong: rgba(132, 126, 112, 0.36);
+        --text: #2c3136;
+        --text-dim: #4c5258;
+        --text-muted: #7a8087;
+        --accent: #5aa7a0;
+        --accent-2: #d8a25a;
+        --accent-3: #7d9ad6;
+        --danger: #d56a6a;
+        --shadow: 0 18px 40px rgba(58, 48, 32, 0.12);
+        --radius-lg: 18px;
+        --radius-md: 12px;
+        --radius-sm: 8px;
+        --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+      }
+
+      * { box-sizing: border-box; }
+      html, body { height: 100%; }
+
+      body {
+        margin: 0;
+        background: radial-gradient(1200px 800px at 8% 0%, #fbf7ef 0%, transparent 65%),
+          radial-gradient(900px 500px at 80% 10%, #eef3f7 0%, transparent 60%),
+          linear-gradient(160deg, #f8f5ee 0%, #eef3ec 50%, #f6f2ea 100%);
+        color: var(--text);
+        font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
+        letter-spacing: 0.2px;
+      }
+
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        opacity: 0.12;
+        mix-blend-mode: soft-light;
+        background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='160' height='160' filter='url(%23n)' opacity='0.18'/></svg>");
+      }
+
+      .app {
+        height: 100vh;
+        display: grid;
+        grid-template-columns: 72px 1fr 380px;
+        grid-template-rows: 58px 1fr 32px;
+        grid-template-areas:
+          "topbar topbar topbar"
+          "nav main preview"
+          "nav status status";
+        gap: 12px;
+        padding: 14px 18px 18px;
+      }
+
+      .panel {
+        background: var(--panel);
+        border: 1px solid var(--stroke);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow);
+        backdrop-filter: blur(16px);
+      }
+
+      /* TopBar */
+      .topbar {
+        grid-area: topbar;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 18px;
+        gap: 16px;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .brand-mark {
+        width: 30px;
+        height: 30px;
+        border-radius: 10px;
+        background: conic-gradient(from 120deg, var(--accent), var(--accent-3), #1b2d3f, var(--accent));
+        box-shadow: 0 8px 14px rgba(74, 212, 201, 0.3);
+      }
+
+      .brand h1 {
+        font-family: "Fraunces", serif;
+        font-size: 18px;
+        margin: 0;
+      }
+
+      .brand span {
+        display: block;
+        font-size: 11px;
+        color: var(--text-muted);
+      }
+
+      .search {
+        flex: 1;
+        max-width: 520px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 14px;
+        border-radius: var(--radius-md);
+        border: 1px solid var(--stroke);
+        background: rgba(255, 255, 255, 0.7);
+      }
+
+      .search input {
+        width: 100%;
+        background: transparent;
+        border: 0;
+        color: var(--text);
+        font-size: 13px;
+        outline: none;
+      }
+
+      .pill {
+        padding: 6px 10px;
+        border-radius: 999px;
+        font-size: 11px;
+        border: 1px solid var(--stroke);
+        color: var(--text-dim);
+        background: rgba(255, 255, 255, 0.6);
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        cursor: pointer;
+      }
+
+      .pill.primary {
+        border-color: rgba(90, 167, 160, 0.5);
+        background: rgba(90, 167, 160, 0.1);
+        color: #285753;
+      }
+
+      .top-actions {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      /* Nav */
+      .nav {
+        grid-area: nav;
+        padding: 16px 10px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 14px;
+      }
+
+      .nav button {
+        width: 52px;
+        height: 52px;
+        border-radius: 16px;
+        border: 1px solid var(--stroke);
+        background: rgba(255, 255, 255, 0.72);
+        color: var(--text-dim);
+        display: grid;
+        place-items: center;
+        cursor: pointer;
+        transition: transform 0.3s var(--ease), border 0.3s ease, color 0.3s ease;
+      }
+
+      .nav button.active {
+        border-color: rgba(74, 212, 201, 0.6);
+        color: var(--text);
+        box-shadow: 0 10px 18px rgba(90, 90, 70, 0.18);
+      }
+
+      .nav button:hover {
+        transform: translateY(-2px);
+        border-color: rgba(122, 162, 255, 0.5);
+        color: var(--text);
+      }
+
+      /* Main Content */
+      .main {
+        grid-area: main;
+        padding: 18px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        min-height: 0;
+        overflow: hidden;
+      }
+
+      .main-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .main-header h2 {
+        margin: 0;
+        font-size: 20px;
+        font-family: "Fraunces", serif;
+      }
+
+      .header-actions {
+        display: flex;
+        gap: 8px;
+      }
+
+      /* Filter Bar */
+      .filter-bar {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+
+      .filter-group {
+        display: flex;
+        gap: 6px;
+      }
+
+      .filter-btn {
+        padding: 8px 14px;
+        border-radius: var(--radius-sm);
+        border: 1px solid var(--stroke);
+        background: rgba(255, 255, 255, 0.7);
+        color: var(--text-dim);
+        font-size: 12px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+
+      .filter-btn.active {
+        border-color: rgba(90, 167, 160, 0.5);
+        background: rgba(90, 167, 160, 0.1);
+        color: #285753;
+      }
+
+      .filter-btn:hover {
+        border-color: rgba(122, 162, 255, 0.5);
+      }
+
+      /* Drop Zone */
+      .drop-zone {
+        border: 2px dashed var(--stroke-strong);
+        border-radius: var(--radius-md);
+        padding: 32px;
+        text-align: center;
+        background: rgba(255, 255, 255, 0.5);
+        transition: all 0.3s ease;
+      }
+
+      .drop-zone:hover, .drop-zone.dragover {
+        border-color: var(--accent);
+        background: rgba(90, 167, 160, 0.08);
+      }
+
+      .drop-zone svg {
+        width: 48px;
+        height: 48px;
+        color: var(--text-muted);
+        margin-bottom: 12px;
+      }
+
+      .drop-zone p {
+        margin: 0 0 8px;
+        color: var(--text-dim);
+        font-size: 14px;
+      }
+
+      .drop-zone small {
+        color: var(--text-muted);
+        font-size: 12px;
+      }
+
+      /* File Grid */
+      .file-grid {
+        flex: 1;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        gap: 14px;
+        min-height: 0;
+        overflow: auto;
+        padding: 4px;
+      }
+
+      .file-card {
+        background: rgba(255, 255, 255, 0.85);
+        border: 1px solid var(--stroke);
+        border-radius: var(--radius-md);
+        padding: 14px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+
+      .file-card:hover {
+        border-color: rgba(122, 162, 255, 0.5);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(58, 48, 32, 0.1);
+      }
+
+      .file-card.selected {
+        border-color: var(--accent);
+        background: rgba(90, 167, 160, 0.08);
+      }
+
+      .file-thumb {
+        width: 100%;
+        height: 100px;
+        border-radius: var(--radius-sm);
+        background: linear-gradient(135deg, #f0f4f8 0%, #e8eef2 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 12px;
+        overflow: hidden;
+      }
+
+      .file-thumb.pdf { background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%); }
+      .file-thumb.word { background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); }
+      .file-thumb.image { background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); }
+
+      .file-thumb svg {
+        width: 36px;
+        height: 36px;
+        color: var(--text-muted);
+      }
+
+      .file-thumb img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .file-info h4 {
+        margin: 0 0 4px;
+        font-size: 13px;
+        font-weight: 500;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .file-meta {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-size: 11px;
+        color: var(--text-muted);
+      }
+
+      .file-type {
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-size: 10px;
+        font-weight: 500;
+        text-transform: uppercase;
+      }
+
+      .file-type.pdf { background: #fee2e2; color: #991b1b; }
+      .file-type.docx { background: #dbeafe; color: #1e40af; }
+      .file-type.doc { background: #e0e7ff; color: #3730a3; }
+      .file-type.jpg, .file-type.png { background: #d1fae5; color: #065f46; }
+      .file-type.heic { background: #fef3c7; color: #92400e; }
+
+      /* Preview Panel */
+      .preview {
+        grid-area: preview;
+        padding: 18px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        min-height: 0;
+        overflow: hidden;
+      }
+
+      .preview-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .preview-header h3 {
+        margin: 0;
+        font-size: 14px;
+        text-transform: uppercase;
+        letter-spacing: 1.4px;
+        color: var(--text-muted);
+      }
+
+      .preview-content {
+        flex: 1;
+        background: rgba(255, 255, 255, 0.8);
+        border: 1px solid var(--stroke);
+        border-radius: var(--radius-md);
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+        overflow: hidden;
+      }
+
+      .preview-viewer {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #f8f9fa 0%, #f1f3f4 100%);
+        min-height: 200px;
+      }
+
+      .preview-viewer.pdf-viewer {
+        background: #525659;
+        padding: 20px;
+      }
+
+      .pdf-page {
+        background: white;
+        width: 100%;
+        max-width: 280px;
+        aspect-ratio: 1 / 1.414;
+        border-radius: 4px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        display: flex;
+        flex-direction: column;
+        padding: 20px;
+      }
+
+      .pdf-page .line {
+        height: 8px;
+        background: #e5e7eb;
+        border-radius: 4px;
+        margin-bottom: 8px;
+      }
+
+      .pdf-page .line.short { width: 60%; }
+      .pdf-page .line.medium { width: 80%; }
+      .pdf-page .line.title { height: 12px; width: 50%; margin-bottom: 16px; }
+
+      .preview-meta {
+        padding: 14px;
+        border-top: 1px solid var(--stroke);
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .meta-row {
+        display: flex;
+        justify-content: space-between;
+        font-size: 12px;
+      }
+
+      .meta-row label {
+        color: var(--text-muted);
+      }
+
+      .meta-row span {
+        color: var(--text-dim);
+        font-weight: 500;
+      }
+
+      .preview-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .action-btn {
+        padding: 10px 14px;
+        border-radius: var(--radius-sm);
+        border: 1px solid var(--stroke);
+        background: rgba(255, 255, 255, 0.8);
+        color: var(--text-dim);
+        font-size: 12px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        transition: all 0.2s ease;
+      }
+
+      .action-btn:hover {
+        border-color: rgba(122, 162, 255, 0.5);
+        background: rgba(255, 255, 255, 0.95);
+      }
+
+      .action-btn.primary {
+        border-color: rgba(90, 167, 160, 0.5);
+        background: rgba(90, 167, 160, 0.1);
+        color: #285753;
+      }
+
+      .action-btn.primary:hover {
+        background: rgba(90, 167, 160, 0.2);
+      }
+
+      .chip-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+
+      .chip {
+        padding: 4px 8px;
+        border-radius: 999px;
+        font-size: 10px;
+        border: 1px solid var(--stroke);
+        color: var(--text-muted);
+        background: rgba(255, 255, 255, 0.65);
+      }
+
+      /* Status Bar */
+      .status {
+        grid-area: status;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 16px;
+        border-radius: var(--radius-md);
+        border: 1px solid var(--stroke);
+        background: rgba(255, 255, 255, 0.6);
+        font-size: 11px;
+        color: var(--text-muted);
+      }
+
+      /* Import Progress */
+      .import-progress {
+        padding: 12px;
+        border-radius: var(--radius-md);
+        border: 1px solid rgba(90, 167, 160, 0.3);
+        background: rgba(90, 167, 160, 0.08);
+      }
+
+      .progress-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 8px;
+      }
+
+      .progress-header span {
+        font-size: 12px;
+        color: var(--text-dim);
+      }
+
+      .progress-bar {
+        height: 4px;
+        background: rgba(90, 167, 160, 0.2);
+        border-radius: 999px;
+        overflow: hidden;
+      }
+
+      .progress-bar .fill {
+        height: 100%;
+        width: 65%;
+        background: linear-gradient(90deg, var(--accent), #7dd3c8);
+        border-radius: 999px;
+        transition: width 0.3s ease;
+      }
+
+      .progress-files {
+        margin-top: 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .progress-file {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 11px;
+        color: var(--text-dim);
+      }
+
+      .progress-file .icon {
+        width: 16px;
+        height: 16px;
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .progress-file .icon.done { background: #d1fae5; color: #065f46; }
+      .progress-file .icon.processing { background: #fef3c7; color: #92400e; }
+
+      /* Animation */
+      .reveal {
+        animation: rise 0.7s var(--ease) both;
+        animation-delay: var(--d, 0s);
+      }
+
+      @keyframes rise {
+        from { opacity: 0; transform: translateY(12px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+
+      @media (max-width: 1100px) {
+        .app {
+          grid-template-columns: 70px 1fr;
+          grid-template-areas:
+            "topbar topbar"
+            "nav main"
+            "nav status";
+        }
+        .preview { display: none; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app">
+      <!-- TopBar -->
+      <div class="topbar panel reveal" style="--d: 0s">
+        <div class="brand">
+          <div class="brand-mark"></div>
+          <div>
+            <h1>DeskLab</h1>
+            <span>文件中心</span>
+          </div>
+        </div>
+        <div class="search">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+            <path d="M21 21L16.6 16.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+            <circle cx="11" cy="11" r="6" stroke="currentColor" stroke-width="1.6" />
+          </svg>
+          <input type="text" placeholder="搜索文件名、内容、标签..." />
+        </div>
+        <div class="top-actions">
+          <span class="pill">已索引 847 个文件</span>
+          <span class="pill primary">+ 导入文件</span>
+        </div>
+      </div>
+
+      <!-- Nav -->
+      <div class="nav panel reveal" style="--d: 0.05s">
+        <button title="工作区">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+            <path d="M4 6H20V18H4V6Z" stroke="currentColor" stroke-width="1.6" />
+            <path d="M8 10H16" stroke="currentColor" stroke-width="1.6" />
+          </svg>
+        </button>
+        <button title="知识">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+            <path d="M5 5H12V19H5V5Z" stroke="currentColor" stroke-width="1.6" />
+            <path d="M12 6H19V18H12" stroke="currentColor" stroke-width="1.6" />
+          </svg>
+        </button>
+        <button title="研究">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+            <circle cx="10" cy="10" r="4" stroke="currentColor" stroke-width="1.6" />
+            <path d="M13.5 13.5L18 18" stroke="currentColor" stroke-width="1.6" />
+          </svg>
+        </button>
+        <button class="active" title="文件">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+            <path d="M4 7H10L12 9H20V18H4V7Z" stroke="currentColor" stroke-width="1.6" />
+          </svg>
+        </button>
+        <button title="任务">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+            <path d="M6 7H18" stroke="currentColor" stroke-width="1.6" />
+            <path d="M6 12H18" stroke="currentColor" stroke-width="1.6" />
+            <path d="M6 17H14" stroke="currentColor" stroke-width="1.6" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Main Content -->
+      <main class="main panel reveal" style="--d: 0.1s">
+        <div class="main-header">
+          <h2>文件中心</h2>
+          <div class="header-actions">
+            <span class="pill">列表视图</span>
+            <span class="pill">网格视图</span>
+          </div>
+        </div>
+
+        <!-- Filter Bar -->
+        <div class="filter-bar">
+          <div class="filter-group">
+            <button class="filter-btn active">全部</button>
+            <button class="filter-btn">PDF</button>
+            <button class="filter-btn">Word</button>
+            <button class="filter-btn">图片</button>
+          </div>
+          <div class="filter-group">
+            <button class="filter-btn">最近导入</button>
+            <button class="filter-btn">按名称</button>
+            <button class="filter-btn">按大小</button>
+          </div>
+        </div>
+
+        <!-- Drop Zone -->
+        <div class="drop-zone">
+          <svg viewBox="0 0 24 24" fill="none">
+            <path d="M12 16V8M12 8L9 11M12 8L15 11" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M3 15V16C3 18.2091 4.79086 20 7 20H17C19.2091 20 21 18.2091 21 16V15" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+          </svg>
+          <p>拖拽文件到此处，或点击选择文件</p>
+          <small>支持 PDF、Word（.docx/.doc）、图片（jpg/png）</small>
+        </div>
+
+        <!-- Import Progress -->
+        <div class="import-progress">
+          <div class="progress-header">
+            <span>正在导入 3 个文件...</span>
+            <span>65%</span>
+          </div>
+          <div class="progress-bar">
+            <div class="fill"></div>
+          </div>
+          <div class="progress-files">
+            <div class="progress-file">
+              <span class="icon done">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none">
+                  <path d="M5 12L10 17L19 8" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </span>
+              <span>report-2024.pdf - 完成</span>
+            </div>
+            <div class="progress-file">
+              <span class="icon processing">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none">
+                  <circle cx="12" cy="12" r="3" fill="currentColor"/>
+                </svg>
+              </span>
+              <span>meeting-notes.docx - 抽取文本中...</span>
+            </div>
+            <div class="progress-file">
+              <span class="icon">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none">
+                  <circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1.6"/>
+                </svg>
+              </span>
+              <span>screenshot.png - 等待中</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- File Grid -->
+        <div class="file-grid">
+          <div class="file-card selected">
+            <div class="file-thumb pdf">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path d="M6 2H14L20 8V22H6V2Z" stroke="currentColor" stroke-width="1.6"/>
+                <path d="M14 2V8H20" stroke="currentColor" stroke-width="1.6"/>
+                <path d="M9 13H15" stroke="currentColor" stroke-width="1.6"/>
+                <path d="M9 17H13" stroke="currentColor" stroke-width="1.6"/>
+              </svg>
+            </div>
+            <div class="file-info">
+              <h4>技术白皮书.pdf</h4>
+              <div class="file-meta">
+                <span class="file-type pdf">PDF</span>
+                <span>2.4 MB</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="file-card">
+            <div class="file-thumb word">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path d="M6 2H14L20 8V22H6V2Z" stroke="currentColor" stroke-width="1.6"/>
+                <path d="M14 2V8H20" stroke="currentColor" stroke-width="1.6"/>
+                <path d="M9 13L11 18L13 13L15 18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <div class="file-info">
+              <h4>产品需求文档.docx</h4>
+              <div class="file-meta">
+                <span class="file-type docx">DOCX</span>
+                <span>856 KB</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="file-card">
+            <div class="file-thumb image">
+              <svg viewBox="0 0 24 24" fill="none">
+                <rect x="4" y="4" width="16" height="16" rx="2" stroke="currentColor" stroke-width="1.6"/>
+                <circle cx="9" cy="9" r="2" stroke="currentColor" stroke-width="1.6"/>
+                <path d="M4 16L8 12L12 16L16 11L20 16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <div class="file-info">
+              <h4>架构图.png</h4>
+              <div class="file-meta">
+                <span class="file-type png">PNG</span>
+                <span>1.2 MB</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="file-card">
+            <div class="file-thumb pdf">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path d="M6 2H14L20 8V22H6V2Z" stroke="currentColor" stroke-width="1.6"/>
+                <path d="M14 2V8H20" stroke="currentColor" stroke-width="1.6"/>
+              </svg>
+            </div>
+            <div class="file-info">
+              <h4>研究报告-Q4.pdf</h4>
+              <div class="file-meta">
+                <span class="file-type pdf">PDF</span>
+                <span>5.8 MB</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="file-card">
+            <div class="file-thumb word">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path d="M6 2H14L20 8V22H6V2Z" stroke="currentColor" stroke-width="1.6"/>
+                <path d="M14 2V8H20" stroke="currentColor" stroke-width="1.6"/>
+              </svg>
+            </div>
+            <div class="file-info">
+              <h4>会议纪要-12月.doc</h4>
+              <div class="file-meta">
+                <span class="file-type doc">DOC</span>
+                <span>124 KB</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="file-card">
+            <div class="file-thumb image">
+              <svg viewBox="0 0 24 24" fill="none">
+                <rect x="4" y="4" width="16" height="16" rx="2" stroke="currentColor" stroke-width="1.6"/>
+                <circle cx="9" cy="9" r="2" stroke="currentColor" stroke-width="1.6"/>
+              </svg>
+            </div>
+            <div class="file-info">
+              <h4>产品截图.jpg</h4>
+              <div class="file-meta">
+                <span class="file-type jpg">JPG</span>
+                <span>890 KB</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <!-- Preview Panel -->
+      <aside class="preview panel reveal" style="--d: 0.15s">
+        <div class="preview-header">
+          <h3>文件预览</h3>
+          <span class="pill">技术白皮书.pdf</span>
+        </div>
+
+        <div class="preview-content">
+          <div class="preview-viewer pdf-viewer">
+            <div class="pdf-page">
+              <div class="line title"></div>
+              <div class="line"></div>
+              <div class="line medium"></div>
+              <div class="line"></div>
+              <div class="line short"></div>
+              <div class="line"></div>
+              <div class="line medium"></div>
+              <div class="line short"></div>
+            </div>
+          </div>
+          <div class="preview-meta">
+            <div class="meta-row">
+              <label>文件名</label>
+              <span>技术白皮书.pdf</span>
+            </div>
+            <div class="meta-row">
+              <label>大小</label>
+              <span>2.4 MB</span>
+            </div>
+            <div class="meta-row">
+              <label>页数</label>
+              <span>24 页</span>
+            </div>
+            <div class="meta-row">
+              <label>导入时间</label>
+              <span>2024-01-10 14:32</span>
+            </div>
+            <div class="meta-row">
+              <label>文本抽取</label>
+              <span style="color: #065f46;">已完成</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="preview-actions">
+          <button class="action-btn primary">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+              <path d="M12 5V19M5 12H19" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+            </svg>
+            转换为 Markdown 并编辑
+          </button>
+          <button class="action-btn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+              <path d="M15 3H21V9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M21 3L13 11" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+              <path d="M11 5H5V19H19V13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            在外部应用打开
+          </button>
+          <button class="action-btn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+              <path d="M10 13L14 9M14 9H10M14 9V13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M12 3C16.9706 3 21 7.02944 21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+            </svg>
+            关联到文档
+          </button>
+        </div>
+
+        <div style="margin-top: 8px;">
+          <h3 style="font-size: 12px; text-transform: uppercase; letter-spacing: 1.4px; color: var(--text-muted); margin: 0 0 10px;">已抽取内容</h3>
+          <div style="background: rgba(255,255,255,0.8); border: 1px solid var(--stroke); border-radius: var(--radius-sm); padding: 12px; font-size: 12px; color: var(--text-dim); line-height: 1.6; max-height: 120px; overflow: auto;">
+            本白皮书探讨了自主智能体在企业环境中的应用策略，涵盖了技术架构、安全考量与实施路径。研究表明，通过结合本地知识库与云端大模型...
+          </div>
+        </div>
+
+        <div class="chip-row" style="margin-top: 12px;">
+          <span class="chip">智能体</span>
+          <span class="chip">技术架构</span>
+          <span class="chip">企业应用</span>
+        </div>
+      </aside>
+
+      <!-- Status Bar -->
+      <div class="status reveal" style="--d: 0.2s">
+        <div>已选中 1 个文件 - 总计 847 个文件 - 12.4 GB</div>
+        <div>文本索引：完成 - 向量索引：846/847</div>
+      </div>
+    </div>
+  </body>
+</html>

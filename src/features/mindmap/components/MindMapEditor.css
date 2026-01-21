@@ -1,0 +1,357 @@
+/* 思维导图编辑器样式 */
+
+.mindmap-editor {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--bg-primary);
+  position: relative;
+}
+
+.mindmap-editor-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-color);
+  z-index: 10;
+}
+
+.mindmap-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.mindmap-title .material-icon {
+  font-size: 18px;
+  color: #10b981;
+}
+
+.mindmap-title .title-text {
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 4px;
+  transition: background 0.15s;
+}
+
+.mindmap-title .title-text:hover {
+  background: var(--bg-hover);
+}
+
+.mindmap-title .title-input {
+  padding: 2px 6px;
+  border: 1px solid var(--primary-color);
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.9);
+  font-size: 14px;
+  font-weight: 500;
+  outline: none;
+}
+
+.mindmap-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.save-status {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-right: 8px;
+}
+
+.save-status .material-icon {
+  font-size: 14px;
+}
+
+.save-status .material-icon:not(.rotating) {
+  color: var(--primary-color);
+}
+
+.action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.action-btn:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.action-btn.active {
+  background: var(--primary-color);
+  border-color: var(--primary-color);
+  color: white;
+}
+
+.action-btn.close-btn:hover {
+  background: #fef2f2;
+  border-color: #fca5a5;
+  color: #dc2626;
+}
+
+.action-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.action-btn .material-icon {
+  font-size: 18px;
+}
+
+.action-divider {
+  width: 1px;
+  height: 20px;
+  background: var(--border-color);
+  margin: 0 4px;
+}
+
+.action-group {
+  position: relative;
+}
+
+/* 下拉面板 */
+.dropdown-panel {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 8px;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 100;
+}
+
+.panel-header {
+  padding: 10px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  border-bottom: 1px solid var(--border-color);
+}
+
+/* 主题面板 */
+.theme-panel {
+  width: 320px;
+}
+
+.theme-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 4px;
+  padding: 8px;
+  max-height: 240px;
+  overflow-y: auto;
+}
+
+.theme-option {
+  padding: 6px 8px;
+  font-size: 11px;
+  text-align: center;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.theme-option:hover {
+  background: var(--bg-hover);
+  border-color: var(--primary-color);
+}
+
+.theme-option.active {
+  background: var(--primary-color);
+  border-color: var(--primary-color);
+  color: white;
+}
+
+/* 布局面板 */
+.layout-panel {
+  width: 160px;
+}
+
+.layout-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 6px;
+}
+
+.layout-option {
+  padding: 8px 12px;
+  font-size: 13px;
+  text-align: left;
+  background: transparent;
+  border: none;
+  border-radius: 4px;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.layout-option:hover {
+  background: var(--bg-hover);
+}
+
+.layout-option.active {
+  background: var(--primary-color);
+  color: white;
+}
+
+/* 导入面板 */
+.import-panel {
+  width: 180px;
+}
+
+.import-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 6px;
+}
+
+.import-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  font-size: 13px;
+  text-align: left;
+  background: transparent;
+  border: none;
+  border-radius: 4px;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.import-option:hover {
+  background: var(--bg-hover);
+}
+
+.import-option .material-icon {
+  font-size: 16px;
+  color: var(--text-secondary);
+}
+
+/* 主体区域 */
+.mindmap-body {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* 思维导图容器 */
+.mindmap-container {
+  flex: 1;
+  overflow: hidden;
+  background: #f8fafc;
+}
+
+/* 小地图 */
+.mindmap-minimap {
+  position: absolute;
+  right: 16px;
+  bottom: 48px;
+  width: 180px;
+  height: 100px;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  z-index: 10;
+}
+
+/* 快捷键提示 */
+.mindmap-shortcuts-hint {
+  position: absolute;
+  left: 16px;
+  bottom: 16px;
+  display: flex;
+  gap: 16px;
+  padding: 8px 12px;
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 6px;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.8);
+  z-index: 10;
+}
+
+.mindmap-shortcuts-hint span {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* 加载状态 */
+.mindmap-editor-loading,
+.mindmap-editor-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  height: 100%;
+  background: var(--bg-primary);
+  color: var(--text-secondary);
+}
+
+.mindmap-editor-loading .material-icon,
+.mindmap-editor-error .material-icon {
+  font-size: 48px;
+}
+
+.mindmap-editor-error .material-icon {
+  color: #dc2626;
+}
+
+.mindmap-editor-error button {
+  padding: 8px 16px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  color: var(--text-primary);
+  cursor: pointer;
+}
+
+.mindmap-editor-error button:hover {
+  background: var(--bg-hover);
+}
+
+/* 旋转动画 */
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.rotating {
+  animation: rotate 1s linear infinite;
+}

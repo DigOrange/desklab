@@ -1,0 +1,94 @@
+/* 元素缩放调整手柄样式 */
+
+.resize-handles-container {
+  position: absolute;
+  inset: -6px;
+  pointer-events: none;
+}
+
+.resize-handle {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background: white;
+  border: 2px solid var(--primary-color);
+  border-radius: 2px;
+  pointer-events: auto;
+  z-index: 10;
+  transition: transform 0.1s, background-color 0.1s;
+}
+
+.resize-handle:hover {
+  background: var(--primary-color);
+  transform: scale(1.2);
+}
+
+/* 四角手柄 */
+.resize-handle-nw {
+  top: 0;
+  left: 0;
+  cursor: nw-resize;
+}
+
+.resize-handle-ne {
+  top: 0;
+  right: 0;
+  cursor: ne-resize;
+}
+
+.resize-handle-se {
+  bottom: 0;
+  right: 0;
+  cursor: se-resize;
+}
+
+.resize-handle-sw {
+  bottom: 0;
+  left: 0;
+  cursor: sw-resize;
+}
+
+/* 四边中点手柄 */
+.resize-handle-n {
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  cursor: n-resize;
+}
+
+.resize-handle-n:hover {
+  transform: translateX(-50%) scale(1.2);
+}
+
+.resize-handle-e {
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  cursor: e-resize;
+}
+
+.resize-handle-e:hover {
+  transform: translateY(-50%) scale(1.2);
+}
+
+.resize-handle-s {
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  cursor: s-resize;
+}
+
+.resize-handle-s:hover {
+  transform: translateX(-50%) scale(1.2);
+}
+
+.resize-handle-w {
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+  cursor: w-resize;
+}
+
+.resize-handle-w:hover {
+  transform: translateY(-50%) scale(1.2);
+}

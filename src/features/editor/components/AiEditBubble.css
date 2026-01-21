@@ -1,0 +1,115 @@
+/* AI 编辑浮动菜单样式 */
+
+.ai-edit-bubble {
+  z-index: 100;
+}
+
+.bubble-container {
+  display: flex;
+  flex-direction: column;
+  background: var(--color-panel);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+}
+
+/* AI 切换按钮 */
+.ai-toggle-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 10px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  font-weight: 500;
+  transition: all var(--transition-fast);
+}
+
+.ai-toggle-btn:hover {
+  background: var(--color-bg-hover);
+  color: var(--color-text);
+}
+
+.ai-toggle-btn.active {
+  background: var(--color-primary-bg);
+  color: var(--color-primary);
+}
+
+.ai-toggle-btn .material-icon {
+  font-size: 18px;
+}
+
+.ai-toggle-btn .arrow {
+  font-size: 16px;
+  margin-left: 2px;
+}
+
+.ai-toggle-btn .btn-label {
+  font-weight: 600;
+}
+
+.ai-toggle-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* 操作菜单 */
+.ai-actions-menu {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  padding: 6px;
+  border-top: 1px solid var(--color-border);
+  max-width: 280px;
+}
+
+.ai-action-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 10px;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  color: var(--color-text-secondary);
+  font-size: 12px;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+}
+
+.ai-action-btn:hover {
+  background: var(--color-bg-hover);
+  color: var(--color-text);
+}
+
+.ai-action-btn .material-icon {
+  font-size: 16px;
+}
+
+.ai-action-btn.custom {
+  flex: 1 0 100%;
+  justify-content: center;
+  background: var(--color-bg-secondary);
+}
+
+.ai-action-btn.custom:hover {
+  background: var(--color-bg-hover);
+}
+
+.ai-action-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* 分隔线 */
+.menu-divider {
+  width: 100%;
+  height: 1px;
+  background: var(--color-border);
+  margin: 4px 0;
+}
